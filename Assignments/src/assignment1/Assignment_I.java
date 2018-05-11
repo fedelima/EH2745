@@ -96,7 +96,7 @@ public class Assignment_I {
 	
 	//*** ALGORITHM FOR Y-BUS MATRIX CREATION ***
 	public static void createYbus() {
-		Double SB = 100.0; //System power base (MVA).
+		Double SB = 1000.0; //System power base (MVA).
 		SearchRoutines.line_search(SB,line_list,terminal_list,cnode_list,breaker_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect line to buses.
 		SearchRoutines.trafo_search(SB,trafoEnd_list,terminal_list,cnode_list,breaker_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect transformers to buses.
 		SearchRoutines.scomp_search(SB,scomp_list,terminal_list,cnode_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect transformers to buses.

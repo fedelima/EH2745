@@ -20,4 +20,8 @@ class Terminal {
 		Element subelement2 = (Element)subnode2;
 		this.ConnectivityNode = subelement2.getAttribute("rdf:resource").replace("#","");
 	}
+
+	public Terminal() {
+		// TODO Auto-generated constructor stub
+	}
 }

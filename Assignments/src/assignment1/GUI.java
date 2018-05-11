@@ -119,13 +119,13 @@ public class GUI {
 		frmAssignmentI.getContentPane().add(pwdPassword);
 		
 		txtFileEQ = new JTextField();
-		txtFileEQ.setText("D:\\academia\\KTH\\EH2745\\Assignments\\xml\\MicroGridTestConfiguration_T1_BE_EQ_V2.xml");
+		txtFileEQ.setText("C:\\Users\\user\\Desktop\\Νέος φάκελος (2)\\Assignment1-EH2745--master\\assignment1\\xml\\MicroGridTestConfiguration_T1_BE_EQ_V2.xml");
 		txtFileEQ.setBounds(249, 11, 389, 20);
 		frmAssignmentI.getContentPane().add(txtFileEQ);
 		txtFileEQ.setColumns(10);
 		
 		txtFileSSH = new JTextField();
-		txtFileSSH.setText("D:\\academia\\KTH\\EH2745\\Assignments\\xml\\MicroGridTestConfiguration_T1_BE_SSH_V2.xml");
+		txtFileSSH.setText("C:\\Users\\user\\Desktop\\Νέος φάκελος (2)\\Assignment1-EH2745--master\\assignment1\\xml\\MicroGridTestConfiguration_T1_BE_SSH_V2.xml");
 		txtFileSSH.setBounds(249, 38, 389, 20);
 		frmAssignmentI.getContentPane().add(txtFileSSH);
 		txtFileSSH.setColumns(10);

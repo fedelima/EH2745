@@ -16,6 +16,7 @@ class ACLineSegment {
 		this.bch = Double.parseDouble(element.getElementsByTagName("cim:ACLineSegment.bch").item(0).getTextContent());
 		this.gch = Double.parseDouble(element.getElementsByTagName("cim:ACLineSegment.gch").item(0).getTextContent());
 		this.length = Double.parseDouble(element.getElementsByTagName("cim:Conductor.length").item(0).getTextContent());
+		this.length = 1.0; //The values seem to be already multiplied with the length
 		this.rtot = r*length;
 		this.xtot = x*length;
 		this.btot=bch*length;

@@ -17,54 +17,103 @@ public class SearchRoutines {
 		
 		//Search algorithm to connect lines to buses:
 		//ACLineSegment => Terminal => CNode => Terminal => Breaker => Busbar (through equipment container)		
-		String From = null, To = null;
+		String []  To = new String[cnode_list.size()];
+		String []  From = new String[cnode_list.size()];
+		//ArrayList<String> From = new ArrayList<String>();
+		//ArrayList<String> To = new ArrayList<String>();
 		String devType = null, dev = null;
-		Double R, X, G, B;
+		Double R = null, X= null, G= null, B= null;
 		Double VB = null; //Voltage base (kV).
 		Double ZB = null; //Impedance base (ohm).
 		
-		boolean ft = true; //From-To flag.
+		boolean notfound ; //From-To flag.
+		int term = 1; //
+		int multiL = 0;
+		int multiR = 0;
+		Terminal leftT= new Terminal();;
+		Terminal rightT = new Terminal();
 		
 		for (ACLineSegment line : line_list) {
 			for (Terminal terminal1 : terminal_list) {
-				if (line.id.equals(terminal1.ConductingEquipment)) {			
+				if (line.id.equals(terminal1.ConductingEquipment)) {
+					if (term == 1) {
+						leftT = terminal1;
+						term = 2;
+					}
 					for (ConnectivityNode cnode : cnode_list) {
-						if (cnode.id.equals(terminal1.ConnectivityNode)) {
-							for (Terminal terminal2 : terminal_list) {
-								if (!terminal2.id.equals(terminal1.id) && cnode.id.equals(terminal2.ConnectivityNode)) {
-									for (Breaker breaker : breaker_list) {
-										if (breaker.id.equals(terminal2.ConductingEquipment)) {
-											for (BusbarSection busbar : busbar_list) {
-												if (busbar.EquipmentContainer.equals(breaker.EquipmentContainer)) {
-													if (breaker.open.equals("false")){
-														if (ft) {
-															From = busbar.name; //From bus.
-															ft = false; //Switch to To bus.													
-														}
-														else {														
-															VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
-															ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-															To = busbar.name; //To bus.															
-															R = line.rtot/ZB; //Per unit resistance.
-															X = line.xtot/ZB; //Per unit reactance.															
-															G = line.gtot*ZB; //Per unit admittance.
-															B = line.btot*ZB; //Per unit susceptance.
-															devType ="Line";
-															dev = line.name;
-															ybus_list.add(new Ybus(From,To,R,X,G,B,devType,dev)); //Add branch to Y-Bus.
-															ft = true; //Switch to From bus.
+							if (cnode.id.equals(leftT.ConnectivityNode)) {
+								for (Terminal terminal2 : terminal_list) {
+									if (!terminal2.id.equals(leftT.id) && cnode.id.equals(terminal2.ConnectivityNode)) {
+										for (Breaker breaker : breaker_list) {
+											if (breaker.id.equals(terminal2.ConductingEquipment)) {
+												for (BusbarSection busbar : busbar_list) {
+													if (busbar.EquipmentContainer.equals(breaker.EquipmentContainer)) {
+														if (breaker.open.equals("false")){																
+																From[multiL] = busbar.name; //From bus.											
+																VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
+																multiL+=1;
 														}
 													}
 												}
 											}
 										}
 									}
-								}
-							}
+								}		
 						}
 					}
 				}
 			}	
+			for (Terminal terminal1 : terminal_list) {
+				if (line.id.equals(terminal1.ConductingEquipment) && !leftT.id.equals(terminal1.id)) {
+					if (term==2) {
+						rightT = terminal1;
+						term = 3;
+					}
+					for (ConnectivityNode cnode : cnode_list) {
+							if (cnode.id.equals(rightT.ConnectivityNode)) {
+								for (Terminal terminal2 : terminal_list) {
+									if (!terminal2.id.equals(rightT.id) && cnode.id.equals(terminal2.ConnectivityNode)) {
+										for (Breaker breaker : breaker_list) {
+											if (breaker.id.equals(terminal2.ConductingEquipment)) {
+												for (BusbarSection busbar : busbar_list) {
+													if (busbar.EquipmentContainer.equals(breaker.EquipmentContainer)) {
+														if (breaker.open.equals("false")){
+																To[multiR] = busbar.name; //To bus.	
+																multiR+=1;	
+														}
+													}
+												}
+											}
+										}
+									}
+								}		
+						}
+					}
+				}
+			}
+			ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.														
+			R = line.rtot/ZB; //Per unit resistance.
+			X = line.xtot/ZB; //Per unit reactance.															
+			G = line.gtot*ZB; //Per unit admittance.
+			B = line.btot*ZB; //Per unit susceptance.
+			devType ="Line";
+			dev = line.name;
+			for (int temp_i=0; temp_i<multiL; temp_i++) {
+				notfound = true;
+				for (int temp_j=0; temp_j<multiR; temp_j++) {
+					for (Ybus ybus_temp : ybus_list) {
+						if ((ybus_temp.From.equals(From[temp_i])) && (ybus_temp.To.equals(To[temp_j])) && (ybus_temp.dev.equals(dev))){
+							notfound = false;
+						}						
+					}
+					if (notfound) {
+						ybus_list.add(new Ybus(From[temp_i],To[temp_j],R,X,G,B,devType,dev)); //Add branch to Y-Bus.
+					}	
+				}	
+			}
+			multiL=0;
+			multiR=0;
+			term=1;
 		}	
 	}
 	
@@ -107,8 +156,8 @@ public class SearchRoutines {
 													SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
 													ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
 													From = busbar.name; //From bus.
-													R = trafoEnd.rtot*ZBn/ZB; //Per unit resistance.
-													X = trafoEnd.xtot*ZBn/ZB; //Per unit reactance.	
+													R = trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
+													X = trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 													devType ="Transformer";
 													dev = trafoEnd.name;
 													ft = false; //Switch to To bus.													
@@ -132,8 +181,8 @@ public class SearchRoutines {
 															SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
 															ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
 															From = busbar.name; //From bus.
-															R = trafoEnd.rtot*ZBn/ZB; //Per unit resistance.
-															X = trafoEnd.xtot*ZBn/ZB; //Per unit reactance.	
+															R = trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
+															X = trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 															devType ="Transformer";
 															dev = trafoEnd.name;
 															ft = false; //Switch to To bus.													
