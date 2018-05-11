@@ -98,6 +98,28 @@ public class SearchRoutines {
 						if (cnode.id.equals(terminal1.ConnectivityNode)) {
 							for (Terminal terminal2 : terminal_list) {
 								if (!terminal2.id.equals(terminal1.id) && cnode.id.equals(terminal2.ConnectivityNode)) {
+									for (BusbarSection busbar : busbar_list) {
+										if (busbar.id.equals(terminal2.ConductingEquipment) || busbar.id.equals(terminal1.ConductingEquipment)) {
+												if (ft) {
+													VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
+													ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
+													VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
+													SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
+													ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
+													From = busbar.name; //From bus.
+													R = trafoEnd.rtot*ZBn/ZB; //Per unit resistance.
+													X = trafoEnd.xtot*ZBn/ZB; //Per unit reactance.	
+													devType ="Transformer";
+													dev = trafoEnd.name;
+													ft = false; //Switch to To bus.													
+												}
+												else {														
+													To = busbar.name; //To bus.													
+													ybus_list.add(new Ybus(From,To,R,X,0.0,0.0,devType,dev)); //Add branch to Y-Bus.
+													ft = true; //Switch to From bus.															
+												}
+										}
+									}
 									for (Breaker breaker : breaker_list) {
 										if (breaker.id.equals(terminal2.ConductingEquipment)) {
 											for (BusbarSection busbar : busbar_list) {
