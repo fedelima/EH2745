@@ -151,6 +151,7 @@ public class Assignment_I {
 	
 	//*** PRINT Y-BUS MATRIX ***
 	public static void printYbus() {
+		PrintYbus.RedirectOutput(); //Redirect console output to file.
 		PrintYbus.printBusBranch(ybus_list); //Bus-Branch format.
 		PrintYbus.printYbusMatrix(ybus_list,busbar_list); //Matrix format.
 	}

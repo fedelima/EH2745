@@ -1,8 +1,21 @@
 package assignment1;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class PrintYbus {
+public class PrintYbus {	
+	//*** REDIRECT CONSOLE OUTPUT TO FILE ***
+	public static void RedirectOutput() {	
+		try {
+			PrintStream out = new PrintStream(new FileOutputStream("ybus.txt"));
+			System.setOut(out); //Re-assign the standard output stream to a file.
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//*** OUTPUT Y-BUS MATRIX IN BUS-BRANCH FORMAT ***
 	public static void printBusBranch(ArrayList<Ybus> ybus_list) {
 		System.out.println("The Y-bus in the bus-branch is the following:\n");
@@ -22,7 +35,8 @@ public class PrintYbus {
 				System.out.format(" %s   %s     %.4f      %.4f        %.4f        %.4f     %s        %s\n",
 						branch.From,branch.To,branch.R,branch.X,branch.Gch,branch.Bch,branch.devType,branch.dev);	
 			}
-		}		
+		}
+		
 	}
 
 	//*** OUTPUT Y-BUS MATRIX IN TABLE FORMAT ***

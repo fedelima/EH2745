@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -22,6 +23,7 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
@@ -30,6 +32,7 @@ import javax.swing.table.TableModel;
 import java.awt.Color;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
+import javax.swing.ImageIcon;
 
 @SuppressWarnings("unused")
 public class GUI {
@@ -37,10 +40,9 @@ public class GUI {
 	private JFrame frmAssignmentI;
 	private JTextField txtUsername;
 	private JPasswordField pwdPassword;
-	private JTextField txtFileEQ;
-	private JTextField txtFileSSH;
 	private JTable tblYbus;
 	private JLabel lblNumberOfBuses;
+	String eqFile, sshFile;
 
 	/**
 	 * Launch the application.
@@ -71,16 +73,14 @@ public class GUI {
 	private void initialize() {
 		frmAssignmentI = new JFrame();
 		frmAssignmentI.setResizable(false);
-		frmAssignmentI.setTitle("Assignment I - EH2745  CIM-XML to Bus-Branch Ybus Model  V1.0");
-		frmAssignmentI.setBounds(0, -50, 654, 351);
+		frmAssignmentI.setTitle("Assignment I - EH2745  CIM-XML to Bus-Branch Ybus Model  V1.2");
+		frmAssignmentI.setBounds(0, -50, 654, 416);
 		frmAssignmentI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JButton btnExecute = new JButton("Execute");
-		btnExecute.setBounds(10, 286, 628, 25);
+		btnExecute.setBounds(10, 351, 628, 25);
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String eqFile = txtFileEQ.getText();
-				String sshFile = txtFileSSH.getText();
 				String user = txtUsername.getText();
 				@SuppressWarnings("deprecation")
 				String psswd = pwdPassword.getText();
@@ -109,49 +109,37 @@ public class GUI {
 		
 		txtUsername = new JTextField();
 		txtUsername.setText("root");
-		txtUsername.setBounds(70, 11, 86, 20);
+		txtUsername.setBounds(70, 71, 86, 20);
 		frmAssignmentI.getContentPane().add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		pwdPassword = new JPasswordField();
 		pwdPassword.setText("xxxx");
-		pwdPassword.setBounds(70, 38, 86, 20);
+		pwdPassword.setBounds(70, 98, 86, 20);
 		frmAssignmentI.getContentPane().add(pwdPassword);
 		
-		txtFileEQ = new JTextField();
-		txtFileEQ.setText("C:\\Users\\user\\Desktop\\Νέος φάκελος (2)\\Assignment1-EH2745--master\\assignment1\\xml\\MicroGridTestConfiguration_T1_BE_EQ_V2.xml");
-		txtFileEQ.setBounds(249, 11, 389, 20);
-		frmAssignmentI.getContentPane().add(txtFileEQ);
-		txtFileEQ.setColumns(10);
-		
-		txtFileSSH = new JTextField();
-		txtFileSSH.setText("C:\\Users\\user\\Desktop\\Νέος φάκελος (2)\\Assignment1-EH2745--master\\assignment1\\xml\\MicroGridTestConfiguration_T1_BE_SSH_V2.xml");
-		txtFileSSH.setBounds(249, 38, 389, 20);
-		frmAssignmentI.getContentPane().add(txtFileSSH);
-		txtFileSSH.setColumns(10);
-		
 		JLabel lblEqFile = new JLabel("EQ File:");
-		lblEqFile.setBounds(191, 16, 63, 17);
+		lblEqFile.setBounds(416, 19, 63, 17);
 		frmAssignmentI.getContentPane().add(lblEqFile);
 		
 		JLabel lblSshFile = new JLabel("SSH File:");
-		lblSshFile.setBounds(191, 41, 52, 14);
+		lblSshFile.setBounds(416, 59, 52, 14);
 		frmAssignmentI.getContentPane().add(lblSshFile);
 		
 		JLabel lblDbUser = new JLabel("DB User:");
-		lblDbUser.setBounds(10, 14, 52, 14);
+		lblDbUser.setBounds(10, 74, 52, 14);
 		frmAssignmentI.getContentPane().add(lblDbUser);
 		
 		JLabel lblDbPsswd = new JLabel("DB Psswd:");
-		lblDbPsswd.setBounds(10, 41, 63, 14);
+		lblDbPsswd.setBounds(10, 101, 63, 14);
 		frmAssignmentI.getContentPane().add(lblDbPsswd);
 		
 		lblNumberOfBuses = new JLabel("Number of Buses in the System:");
-		lblNumberOfBuses.setBounds(10, 71, 227, 14);
+		lblNumberOfBuses.setBounds(416, 101, 205, 14);
 		frmAssignmentI.getContentPane().add(lblNumberOfBuses);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 96, 628, 179);
+		scrollPane.setBounds(10, 129, 628, 211);
 		frmAssignmentI.getContentPane().add(scrollPane);
 		
 		tblYbus = new JTable();
@@ -163,5 +151,64 @@ public class GUI {
 			}
 		));
 		scrollPane.setViewportView(tblYbus);
+		
+		JButton btnEqFile = new JButton("Choose EQ File...");
+		btnEqFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(frmAssignmentI);
+				
+				File file = null;
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    eqFile = file.getAbsolutePath();
+				    System.out.println("Chosen file: " + eqFile);
+				} else {
+				    System.out.println("Please select a valid file");
+				}
+			}
+		});
+		btnEqFile.setBounds(493, 13, 145, 23);
+		frmAssignmentI.getContentPane().add(btnEqFile);
+		
+		JButton btnSshFile = new JButton("Choose SSH File...");
+		btnSshFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(frmAssignmentI);
+				
+				File file = null;
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    sshFile = file.getAbsolutePath();
+				    System.out.println("Chosen file: " + sshFile);
+				} else {
+				    System.out.println("Please select a valid file");
+				}
+			}
+		});
+		btnSshFile.setBounds(493, 53, 145, 23);
+		frmAssignmentI.getContentPane().add(btnSshFile);
+		
+		JLabel lblDatabaseCredentials = new JLabel("Database Credentials:");
+		lblDatabaseCredentials.setBounds(10, 46, 146, 14);
+		frmAssignmentI.getContentPane().add(lblDatabaseCredentials);
+		
+	    ImageIcon imageIcon = new ImageIcon("kth_logo.png");
+		JLabel lblLogo = new JLabel(imageIcon);
+		lblLogo.setBounds(166, 13, 240, 104);
+		frmAssignmentI.getContentPane().add(lblLogo);
+		
+		JButton btnAbout = new JButton("About");
+		btnAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(frmAssignmentI, "EH2745 Computer Applications in Power Systems\n"
+						+ "Assignment I V1.2\n"
+						+ "By: G.Papadopoulos & F. de Lima\n"
+						+ "E-mails: gpapa@kth.se, fdl@kth.se");
+			}
+		});
+		btnAbout.setBounds(10, 11, 146, 23);
+		frmAssignmentI.getContentPane().add(btnAbout);
 	}
 }
