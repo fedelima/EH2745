@@ -52,6 +52,11 @@ public class SearchRoutines {
 																From[multiL] = busbar.name; //From bus.											
 																VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
 																multiL+=1;
+																ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.														
+																R = line.rtot/ZB; //Per unit resistance.
+																X = line.xtot/ZB; //Per unit reactance.															
+																G = line.gtot*ZB; //Per unit admittance.
+																B = line.btot*ZB; //Per unit susceptance.
 														}
 													}
 												}
@@ -80,6 +85,7 @@ public class SearchRoutines {
 														if (breaker.open.equals("false")){
 																To[multiR] = busbar.name; //To bus.	
 																multiR+=1;	
+																
 														}
 													}
 												}
@@ -90,12 +96,7 @@ public class SearchRoutines {
 						}
 					}
 				}
-			}
-			ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.														
-			R = line.rtot/ZB; //Per unit resistance.
-			X = line.xtot/ZB; //Per unit reactance.															
-			G = line.gtot*ZB; //Per unit admittance.
-			B = line.btot*ZB; //Per unit susceptance.
+			}			
 			devType ="Line";
 			dev = line.name;
 			for (int temp_i=0; temp_i<multiL; temp_i++) {
@@ -184,7 +185,6 @@ public class SearchRoutines {
 													for (BusbarSection busbar : busbar_list) {
 														if (busbar.EquipmentContainer.equals(breaker.EquipmentContainer)) {
 															if (breaker.open.equals("false")){
-																System.out.println(multiL);
 																From[multiL] = busbar.name; //From bus.											
 																VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
 																ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
