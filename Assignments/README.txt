@@ -27,7 +27,7 @@ XML files used:
 - MicroGridTestConfiguration_T1_BE_SSH_V2.xml
 
 Link to video:
-https://youtu.be/lInBSSg9ZGs
+https://www.youtube.com/watch?v=YKd0dA_ZncU
 
 Included there is also a stand-alone runnable java archive (runnable jar).
 	
