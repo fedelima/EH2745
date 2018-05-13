@@ -32,7 +32,7 @@ public class Assignment_I {
 	static ArrayList<Ybus> ybus_list = new ArrayList<Ybus>();
 	
 	//*** MAIN ROUTINE (EXECUTED FROM GUI) ***
-	public static ArrayList<Ybus> execute(String eqFile, String sshFile, String user, String psswd){
+	public static ArrayList<Ybus> execute(String eqFile, String sshFile, String user, String psswd, Double SB){
 		initLists(); //Initialize array lists.
 		NodeList eq_profile = ReadXML.ToNodeList(eqFile); //Read CIM EQ profile into Node List.
 		NodeList ssh_profile = ReadXML.ToNodeList(sshFile); //Read CIM SSH profile into Node List.
@@ -43,7 +43,7 @@ public class Assignment_I {
 			extractNode(ssh_profile.item(i),"SSH"); //Extract SSH profile node list into database.
 		}
 		augmentObjects(); //Augment EQ objects with SSH data.
-		createYbus(); //Create Y-Bus matrix.
+		createYbus(SB); //Create Y-Bus matrix.
 		createdb(user,psswd); //Build SQL database (OBS: Comment this line to work without SQL for debugging purposes!).
 		printYbus(); //Print Y-Bus matrix.
 		return ybus_list; //Return Y-Bus list to display it in the GUI.		
@@ -95,8 +95,7 @@ public class Assignment_I {
 	}
 	
 	//*** ALGORITHM FOR Y-BUS MATRIX CREATION ***
-	public static void createYbus() {
-		Double SB = 1000.0; //System power base (MVA).
+	public static void createYbus(Double SB) {
 		SearchRoutines.line_search(SB,line_list,terminal_list,cnode_list,breaker_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect line to buses.
 		SearchRoutines.trafo_search(SB,trafo_list,trafoEnd_list,terminal_list,cnode_list,breaker_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect transformers to buses.
 		SearchRoutines.scomp_search(SB,scomp_list,terminal_list,cnode_list,busbar_list,voltlvl_list,basevolt_list,ybus_list); //Connect transformers to buses.

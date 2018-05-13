@@ -43,6 +43,7 @@ public class GUI {
 	private JTable tblYbus;
 	private JLabel lblNumberOfBuses;
 	String eqFile, sshFile;
+	private JTextField txtBase;
 
 	/**
 	 * Launch the application.
@@ -74,17 +75,18 @@ public class GUI {
 		frmAssignmentI = new JFrame();
 		frmAssignmentI.setResizable(false);
 		frmAssignmentI.setTitle("Assignment I - EH2745  CIM-XML to Bus-Branch Ybus Model  V1.2");
-		frmAssignmentI.setBounds(0, -50, 654, 416);
+		frmAssignmentI.setBounds(0, -50, 720, 437);
 		frmAssignmentI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JButton btnExecute = new JButton("Execute");
-		btnExecute.setBounds(10, 351, 628, 25);
+		btnExecute.setBounds(10, 372, 694, 25);
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user = txtUsername.getText();
 				@SuppressWarnings("deprecation")
 				String psswd = pwdPassword.getText();
-				ArrayList<Ybus> ybus_list = assignment1.Assignment_I.execute(eqFile, sshFile, user, psswd); //Get ybus list.
+				Double SB = Double.parseDouble(txtBase.getText());
+				ArrayList<Ybus> ybus_list = assignment1.Assignment_I.execute(eqFile, sshFile, user, psswd, SB); //Get ybus list.
 				Integer N = assignment1.Assignment_I.getNumberOfBuses(); //Get number of buses.
 				
 				DefaultTableModel tableData = new DefaultTableModel();			
@@ -119,11 +121,11 @@ public class GUI {
 		frmAssignmentI.getContentPane().add(pwdPassword);
 		
 		JLabel lblEqFile = new JLabel("EQ File:");
-		lblEqFile.setBounds(416, 19, 63, 17);
+		lblEqFile.setBounds(482, 22, 63, 17);
 		frmAssignmentI.getContentPane().add(lblEqFile);
 		
 		JLabel lblSshFile = new JLabel("SSH File:");
-		lblSshFile.setBounds(416, 59, 52, 14);
+		lblSshFile.setBounds(482, 56, 52, 14);
 		frmAssignmentI.getContentPane().add(lblSshFile);
 		
 		JLabel lblDbUser = new JLabel("DB User:");
@@ -135,11 +137,11 @@ public class GUI {
 		frmAssignmentI.getContentPane().add(lblDbPsswd);
 		
 		lblNumberOfBuses = new JLabel("Number of Buses in the System:");
-		lblNumberOfBuses.setBounds(416, 101, 205, 14);
+		lblNumberOfBuses.setBounds(482, 87, 205, 14);
 		frmAssignmentI.getContentPane().add(lblNumberOfBuses);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 129, 628, 211);
+		scrollPane.setBounds(10, 143, 694, 218);
 		frmAssignmentI.getContentPane().add(scrollPane);
 		
 		tblYbus = new JTable();
@@ -168,7 +170,7 @@ public class GUI {
 				}
 			}
 		});
-		btnEqFile.setBounds(493, 13, 145, 23);
+		btnEqFile.setBounds(559, 16, 145, 23);
 		frmAssignmentI.getContentPane().add(btnEqFile);
 		
 		JButton btnSshFile = new JButton("Choose SSH File...");
@@ -187,7 +189,7 @@ public class GUI {
 				}
 			}
 		});
-		btnSshFile.setBounds(493, 53, 145, 23);
+		btnSshFile.setBounds(559, 50, 145, 23);
 		frmAssignmentI.getContentPane().add(btnSshFile);
 		
 		JLabel lblDatabaseCredentials = new JLabel("Database Credentials:");
@@ -196,7 +198,7 @@ public class GUI {
 		
 	    ImageIcon imageIcon = new ImageIcon("kth_logo.png");
 		JLabel lblLogo = new JLabel(imageIcon);
-		lblLogo.setBounds(166, 13, 240, 104);
+		lblLogo.setBounds(180, 13, 280, 104);
 		frmAssignmentI.getContentPane().add(lblLogo);
 		
 		JButton btnAbout = new JButton("About");
@@ -210,5 +212,15 @@ public class GUI {
 		});
 		btnAbout.setBounds(10, 11, 146, 23);
 		frmAssignmentI.getContentPane().add(btnAbout);
+		
+		txtBase = new JTextField();
+		txtBase.setText("1000");
+		txtBase.setBounds(663, 112, 41, 20);
+		frmAssignmentI.getContentPane().add(txtBase);
+		txtBase.setColumns(10);
+		
+		JLabel lblSystemBasemva = new JLabel("SB (MVA):");
+		lblSystemBasemva.setBounds(589, 113, 64, 14);
+		frmAssignmentI.getContentPane().add(lblSystemBasemva);
 	}
 }

@@ -137,9 +137,6 @@ public class SearchRoutines {
 		Double R = null, X = null;
 		Double VB = null; //Voltage base (kV).
 		Double ZB = null; //Impedance base (ohm).
-		Double VBn = null; //nominal Voltage base (kV).
-		Double ZBn = null; //nominal Impedance base (ohm).
-		Double SBn = null; //nominal power base
 		String dev, devType; 
 		
 		boolean notfound ; //From-To flag.
@@ -168,16 +165,12 @@ public class SearchRoutines {
 												if (busbar.id.equals(terminal2.ConductingEquipment) || busbar.id.equals(terminal1.ConductingEquipment)) {
 													From[multiL] = busbar.name; //From bus.											
 													VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
-													ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-													VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
-													SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
-													ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.												
+													ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.											
 													R += trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
 													X += trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 													devType ="Transformer";
 													dev = trafoEnd.name;
-													multiL+=1;
-																	
+													multiL+=1;																	
 												}
 											}
 											for (Breaker breaker : breaker_list) {
@@ -187,10 +180,7 @@ public class SearchRoutines {
 															if (breaker.open.equals("false")){
 																From[multiL] = busbar.name; //From bus.											
 																VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
-																ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-																VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
-																SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
-																ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.												
+																ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.									
 																R += trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
 																X += trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 																devType ="Transformer";
@@ -226,10 +216,6 @@ public class SearchRoutines {
 													if (term == 3) {																								
 														VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
 														ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-														VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
-														SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
-														ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
-														//From[] = busbar.name; //From bus.
 														R += trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
 														X += trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 														devType ="Transformer";
@@ -248,10 +234,6 @@ public class SearchRoutines {
 																if (term == 3) {																								
 																	VB = busbar.getBaseVoltage(voltlvl_list,basevolt_list); //Get base voltage of bus.
 																	ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-																	VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
-																	SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
-																	ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
-																	//From[] = busbar.name; //From bus.
 																	R += trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
 																	X += trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
 																	devType ="Transformer";
@@ -271,14 +253,6 @@ public class SearchRoutines {
 						}						
 					}
 				}
-				//ZB = Math.pow(VB,2)/SB; //Calculate base impedance at node.
-				//VBn = trafoEnd.VBn; //Get nominal base voltage of the Transformer.
-				//SBn = trafoEnd.SBn; //Get nominal base power of the Transformer.
-				//ZBn = Math.pow(VBn,2)/SBn; //Calculate base impedance at node.
-				//From[] = busbar.name; //From bus.
-				//R = trafoEnd.rtot/ZB; //Per unit resistance. *ZBn
-				//X = trafoEnd.xtot/ZB; //Per unit reactance.	*ZBn
-				
 			}	
 			devType ="Transformer";
 			dev = trafo.name;
