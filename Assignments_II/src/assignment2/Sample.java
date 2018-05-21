@@ -12,10 +12,4 @@ public class Sample {
 		this.attribute = attribute;
 		this.sub_rdfid = sub_rdfid;
 	}
-	
-	public Sample(Double[] attribute, int state) {
-		this.attribute = attribute;
-		this.state = state;
-	}
-	
 }
