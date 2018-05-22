@@ -15,8 +15,7 @@ public class Database {
 	static Statement query = null;
 	
 	//*** BUILD LEARNING AND TEST SET FROM SQL DATA ***
-	public static int createSets(String user, String psswd,ArrayList<Sample> learnSet,ArrayList<Sample> testSet) {
-		int N = 0; //Number of attributes per sample (number of buses in the system).
+	public static void buildSet(String user, String psswd,ArrayList<Sample> set, String tableName) {
 		try {	
 			//Connect to specified database.
 			jdbcString = "jdbc:mysql://localhost:3306/assignment_2?useSSL=false";
@@ -26,15 +25,13 @@ public class Database {
 			//Get number of buses in the system.		
 			ResultSet NBus = query.executeQuery("SELECT count(*) as NBus FROM substations");
 			NBus.next(); //place cursor on the first row.
-			N =  Integer.parseInt(NBus.getString("NBus"));//Number of buses in the system.
+			int N =  Integer.parseInt(NBus.getString("NBus"));//Number of buses in the system.
 			
 			//Convert tables to matrices.
-			String[][] measurements = Table2Matrix("measurements");
-			String[][] analog_values = Table2Matrix("analog_values");
+			String[][] matrix = Table2Matrix(tableName);
 			
 			//Convert matrices to sets.
-			Matrix2Set(measurements,learnSet,N); //Create learn set.
-			Matrix2Set(analog_values,testSet,N); //Create test set.	
+			Matrix2Set(matrix,set,N); //Create learn set.
 			
 			//Close database objects.			
 			query.close(); //Close query.
@@ -42,8 +39,60 @@ public class Database {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}		
-		return N;
 	}
+	
+	//*** BUILD RESULT SET INTO DATABASE ***
+	@SuppressWarnings("unused")
+	public static void populateSet(String user, String psswd,ArrayList<Sample> set,String tableName) {
+		try {								
+			//Connect to specified database.
+			jdbcString = "jdbc:mysql://localhost:3306/assignment_2?useSSL=false";
+			conn = DriverManager.getConnection(jdbcString, user, psswd);
+			query = conn.createStatement();
+			
+			//Clear table if it already exists.
+			String deleteTable = "DROP TABLE IF EXISTS " + tableName;
+			boolean ResultSet1 = query.execute(deleteTable);
+			
+			// Create table if it doesn't already exist.			
+			String createTable = "CREATE TABLE IF NOT EXISTS " + tableName+ "(" 
+		            + "Time VARCHAR(50),"  
+		            + "V1 DECIMAL(10,4)," 
+		            + "V2 DECIMAL(10,4),"
+		            + "V3 DECIMAL(10,4),"
+		            + "V4 DECIMAL(10,4),"
+		            + "V5 DECIMAL(10,4),"
+		            + "V6 DECIMAL(10,4),"
+		            + "V7 DECIMAL(10,4),"
+		            + "V8 DECIMAL(10,4),"
+		            + "V9 DECIMAL(10,4),"
+		            + "Class DECIMAL(10))"; 
+			boolean ResultSet2 = query.execute(createTable);
+			
+			// Insert records into table.
+			for (Sample sample : set) {
+				String insertTable = "INSERT INTO " + tableName + " VALUES('" 
+						+ sample.time + "'," 
+						+ sample.attribute[0] + ","
+						+ sample.attribute[1] + ","
+						+ sample.attribute[2] + ","
+						+ sample.attribute[3] + ","
+						+ sample.attribute[4] + ","
+						+ sample.attribute[5] + ","
+						+ sample.attribute[6] + ","
+						+ sample.attribute[7] + ","
+						+ sample.attribute[8] + ","
+						+ sample.state + ");";
+				int RowCount = query.executeUpdate(insertTable);
+			}
+			
+			//Close database objects.			
+			query.close(); //Close query.
+			conn.close(); //Close connection.
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}	
 	
 	//*** CREATE MATRIX FROM TABLE ***
 	private static String[][] Table2Matrix(String tableName) {
@@ -95,5 +144,5 @@ public class Database {
 				n = 0; //reset attribute pointer
 			}
 		}
-	}	
+	}
 }

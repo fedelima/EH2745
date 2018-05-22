@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class KNN {
 	//*** KNN SAMPLE CLASSIFICATION ***
-	public static void Classify(ArrayList<Sample> learnSet,ArrayList<Sample> testSet, int N) {
+	public static void Classify(ArrayList<Sample> learnSet,ArrayList<Sample> testSet) {
 		Sample sampleTest = null;
 		Sample sampleLearn = null;
 		double dsq = 0.0;
-		int M = learnSet.size(); //Sample index.
-		int I = testSet.size(); //Sample index.
+		int N = 9; //Number of buses in the system.
+		int M = learnSet.size(); //Number of learning samples.
+		int I = testSet.size(); //Number of testing samples.
 		int K = 5; //K-Number.
 		int[] state = new int[K];
 		double[][] distance = new double[M][2];
@@ -23,6 +24,7 @@ public class KNN {
 				}
 				distance[m][0] = Math.sqrt(dsq);
 				distance[m][1] = sampleLearn.state; 
+				dsq = 0.0; //reset squared distance.
 			}
 			state = sort(distance,K); //array with the K nearest neighbors classes
 			for (int k=0; k < K; k++) {
@@ -31,7 +33,6 @@ public class KNN {
 			}			
 		}
 	}
-	
 	
 	//*** SORT FIRST K ELEMENTS IN ARRAY *** 
 	private static int[] sort(double[][] matrix,int K) {
