@@ -15,10 +15,10 @@ public class Database {
 	static Statement query = null;
 	
 	//*** BUILD LEARNING AND TEST SET FROM SQL DATA ***
-	public static void buildSet(String user, String psswd,ArrayList<Sample> set, String tableName) {
+	public static void buildSet(String host, String database,String user, String psswd, ArrayList<Sample> set, String tableName) {
 		try {	
 			//Connect to specified database.
-			jdbcString = "jdbc:mysql://localhost:3306/assignment_2?useSSL=false";
+			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false";
 			conn = DriverManager.getConnection(jdbcString, user, psswd);
 			query = conn.createStatement();
 			
@@ -43,10 +43,10 @@ public class Database {
 	
 	//*** BUILD RESULT SET INTO DATABASE ***
 	@SuppressWarnings("unused")
-	public static void populateSet(String user, String psswd,ArrayList<Sample> set,String tableName) {
+	public static void populateSet(String host, String database,String user, String psswd, ArrayList<Sample> set, String tableName) {
 		try {								
 			//Connect to specified database.
-			jdbcString = "jdbc:mysql://localhost:3306/assignment_2?useSSL=false";
+			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false";
 			conn = DriverManager.getConnection(jdbcString, user, psswd);
 			query = conn.createStatement();
 			

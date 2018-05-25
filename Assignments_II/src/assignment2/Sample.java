@@ -3,7 +3,7 @@ package assignment2;
 public class Sample {
 	int state;
 	Double[] attribute;
-	String[] rdfid, name, time, sub_rdfid;
+	String[] rdfid, name, sub_rdfid, time;
 	
 	public Sample(String[] rdfid, String[] name, String[] time, Double[] attribute, String[] sub_rdfid) {
 		this.rdfid = rdfid;
