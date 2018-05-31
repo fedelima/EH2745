@@ -54,12 +54,12 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 718, 513);
+		frame.setBounds(100, 100, 788, 513);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		txtUser = new JTextField();
-		txtUser.setBounds(80, 89, 86, 20);
+		txtUser.setBounds(93, 89, 86, 20);
 		txtUser.setText("root");
 		txtUser.setColumns(10);
 		frame.getContentPane().add(txtUser);
@@ -73,7 +73,7 @@ public class GUI {
 		frame.getContentPane().add(label_1);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(80, 114, 86, 20);
+		txtPassword.setBounds(93, 114, 86, 20);
 		txtPassword.setText("xxxx");
 		frame.getContentPane().add(txtPassword);
 		
@@ -83,7 +83,7 @@ public class GUI {
 		frame.getContentPane().add(label_2);
 		
 		JButton btnExecute = new JButton("Execute");
-		btnExecute.setBounds(20, 438, 672, 25);
+		btnExecute.setBounds(20, 438, 734, 25);
 		btnExecute.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
@@ -109,21 +109,21 @@ public class GUI {
 				for (Sample sample : learnSet) {					
 					String[] row = new String[columnNames.length];
 					row[0] = "Learn";
-					row[1] = sample.time[0];
+					row[1] = sample.time;
 					for (int i=0; i < sample.attribute.length; i++) {
 						row[i+2] = sample.attribute[i].toString(); 
 					}
-					row[columnNames.length-1] = Integer.toString(sample.state);
+					row[columnNames.length-1] = sample.GetState();
 					tableData.addRow(row);
 				}
 				for (Sample sample : testSet) {					
 					String[] row = new String[columnNames.length];
 					row[0] = "Test";
-					row[1] = sample.time[0];
+					row[1] = sample.time;
 					for (int i=0; i < sample.attribute.length; i++) {
 						row[i+2] = sample.attribute[i].toString(); 
 					}
-					row[columnNames.length-1] = Integer.toString(sample.state);
+					row[columnNames.length-1] = sample.GetState();
 					tableData.addRow(row);
 				}
 				tblSets.setModel(tableData);
@@ -136,7 +136,7 @@ public class GUI {
 		frame.getContentPane().add(lblDatabase);
 		
 		txtDatabase = new JTextField();
-		txtDatabase.setBounds(80, 61, 86, 20);
+		txtDatabase.setBounds(93, 61, 86, 20);
 		txtDatabase.setText("assignment_2");
 		txtDatabase.setColumns(10);
 		frame.getContentPane().add(txtDatabase);
@@ -146,43 +146,43 @@ public class GUI {
 		frame.getContentPane().add(lblHost);
 		
 		txtHost = new JTextField();
-		txtHost.setBounds(80, 36, 86, 20);
+		txtHost.setBounds(93, 36, 86, 20);
 		txtHost.setText("localhost");
 		txtHost.setColumns(10);
 		frame.getContentPane().add(txtHost);
 		
 		txtLearnSet = new JTextField();
-		txtLearnSet.setBounds(593, 80, 99, 20);
+		txtLearnSet.setBounds(655, 86, 99, 20);
 		txtLearnSet.setText("measurements");
 		txtLearnSet.setColumns(10);
 		frame.getContentPane().add(txtLearnSet);
 		
 		txtTestSet = new JTextField();
-		txtTestSet.setBounds(593, 105, 99, 20);
+		txtTestSet.setBounds(655, 111, 99, 20);
 		txtTestSet.setText("analog_values");
 		txtTestSet.setColumns(10);
 		frame.getContentPane().add(txtTestSet);
 		
 		JLabel lblLearnSet = new JLabel("Learn Set:");
-		lblLearnSet.setBounds(530, 83, 74, 14);
+		lblLearnSet.setBounds(592, 89, 74, 14);
 		frame.getContentPane().add(lblLearnSet);
 		
 		JLabel lblTestSet = new JLabel("Test Set:");
-		lblTestSet.setBounds(530, 108, 63, 14);
+		lblTestSet.setBounds(592, 114, 63, 14);
 		frame.getContentPane().add(lblTestSet);
 		
 		JLabel lblKthRoyalInstitute = new JLabel("KTH Royal Institute of Technology");
-		lblKthRoyalInstitute.setBounds(220, 78, 255, 20);
+		lblKthRoyalInstitute.setBounds(268, 78, 255, 20);
 		lblKthRoyalInstitute.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frame.getContentPane().add(lblKthRoyalInstitute);
 		
 		JLabel lblLearntestSets = new JLabel("Learn/Test Sets:");
-		lblLearntestSets.setBounds(546, 62, 146, 14);
+		lblLearntestSets.setBounds(608, 68, 146, 14);
 		lblLearntestSets.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(lblLearntestSets);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 152, 672, 275);
+		scrollPane.setBounds(20, 152, 734, 275);
 		frame.getContentPane().add(scrollPane);
 		
 		tblSets = new JTable();
@@ -198,12 +198,12 @@ public class GUI {
 		
 		JLabel lblAssignmentIi = new JLabel("Assignment II - Machine Learning");
 		lblAssignmentIi.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAssignmentIi.setBounds(197, 39, 315, 25);
+		lblAssignmentIi.setBounds(245, 39, 315, 25);
 		frame.getContentPane().add(lblAssignmentIi);
 		
 		JLabel lblByGpapakthse = new JLabel("By: gpapa@kth.se & fdl@kth.se");
 		lblByGpapakthse.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblByGpapakthse.setBounds(268, 106, 146, 25);
+		lblByGpapakthse.setBounds(316, 106, 146, 25);
 		frame.getContentPane().add(lblByGpapakthse);
 	}
 }

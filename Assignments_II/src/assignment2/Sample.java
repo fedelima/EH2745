@@ -1,15 +1,28 @@
 package assignment2;
 
 public class Sample {
-	int state;
-	Double[] attribute;
-	String[] rdfid, name, sub_rdfid, time;
+	static final int HIGH_LOAD = 0;
+	static final int SHUT_DOWN = 1;
+	static final int LOW_LOAD = 2;
+	static final int DISCONNECT = 3;
 	
-	public Sample(String[] rdfid, String[] name, String[] time, Double[] attribute, String[] sub_rdfid) {
-		this.rdfid = rdfid;
-		this.name = name;
+	String time;
+	Double[] attribute;	
+	int state;
+	
+	public Sample(String time, Double[] attribute) {
 		this.time = time;
 		this.attribute = attribute;
-		this.sub_rdfid = sub_rdfid;
+	}
+	
+	public String GetState() {
+		String condition = null;
+		switch (this.state) {
+			case HIGH_LOAD : condition = "HIGH LOAD"; break;
+			case SHUT_DOWN : condition = "SHUT_DOWN"; break;
+			case LOW_LOAD : condition = "LOW_LOAD"; break;
+			case DISCONNECT : condition = "DISCONNECT"; break;
+		}
+		return condition;
 	}
 }

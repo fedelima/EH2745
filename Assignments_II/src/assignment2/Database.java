@@ -66,7 +66,7 @@ public class Database {
 		            + "V7 DECIMAL(10,4),"
 		            + "V8 DECIMAL(10,4),"
 		            + "V9 DECIMAL(10,4),"
-		            + "Class DECIMAL(10))"; 
+		            + "Class VARCHAR(50))"; 
 			boolean ResultSet2 = query.execute(createTable);
 			
 			// Insert records into table.
@@ -81,8 +81,8 @@ public class Database {
 						+ sample.attribute[5] + ","
 						+ sample.attribute[6] + ","
 						+ sample.attribute[7] + ","
-						+ sample.attribute[8] + ","
-						+ sample.state + ");";
+						+ sample.attribute[8] + ",'"
+						+ sample.GetState() + "');";
 				int RowCount = query.executeUpdate(insertTable);
 			}
 			
@@ -125,21 +125,15 @@ public class Database {
 		int I = matrix.length; //Number of rows.
 		int M = I/(2*N); //Number of samples. 
 		
-		String[][] rdfid = new String[M][N];
-		String[][] name = new String[M][N];
-		String[][] time = new String[M][N];
-		String[][] sub_rdfid = new String[M][N];
+		String[] time = new String[M];
 		Double[][] attribute = new Double[M][N];		
 		
 		for (int i=0; i < I; i+=2) {
-			rdfid[m][n] = matrix[i][0];					
-			name[m][n] = matrix[i][1];;	
-			time[m][n] = matrix[i][2];;
+			time[m] = matrix[i][2];;
 			attribute[m][n] = Double.parseDouble(matrix[i][3]);
-			sub_rdfid[m][n] = matrix[i][4];
 			n++;		
 			if (n >= N){
-				set.add(new Sample(rdfid[m],name[m],time[m],attribute[m],sub_rdfid[m]));
+				set.add(new Sample(time[m], attribute[m]));
 				m++; //next sample
 				n = 0; //reset attribute pointer
 			}

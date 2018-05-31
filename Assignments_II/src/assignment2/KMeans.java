@@ -3,12 +3,6 @@ package assignment2;
 import java.util.ArrayList;
 
 public class KMeans {
-	//*** VARIABLE DEFINITION ***
-	static final int HIGH_LOAD = 0;
-	static final int SHUT_DOWN = 1;
-	static final int LOW_LOAD = 2;
-	static final int DISCONNECT = 3;
-	
 	//*** K-CLUSTERING ROUTINE ***
 	public static void Cluster(ArrayList<Sample> learnSet) {
 		double[][] centroid = { {1.00, 1.01, 1.02, 0.89, 0.87, 0.95, 0.90, 0.93, 0.80},
@@ -20,8 +14,8 @@ public class KMeans {
 		int K = 4; //Number of centroids.
 		int clusterWith; //Sample "m" belongs to which centroid? 
 		double dsq = 0.0;
-		double epsilon = 0.01;
-		double max_delta = 1000;
+		double epsilon = 0.001;
+		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon
 		double[][] distance = new double[M][K]; //Distance from sample "m" to centroid "k"
 		double[][] delta = new double[K][N]; //Array to change centroid's position
 		Sample sample = null;
@@ -39,10 +33,10 @@ public class KMeans {
 				}
 				clusterWith = mindex(distance[m]);
 				switch (clusterWith) {
-					case HIGH_LOAD : sample.state = HIGH_LOAD; break;
-					case SHUT_DOWN : sample.state = SHUT_DOWN; break;
-					case LOW_LOAD : sample.state = LOW_LOAD; break;
-					case DISCONNECT : sample.state = DISCONNECT; break;				
+					case Sample.HIGH_LOAD : sample.state = Sample.HIGH_LOAD; break;
+					case Sample.SHUT_DOWN : sample.state = Sample.SHUT_DOWN; break;
+					case Sample.LOW_LOAD : sample.state = Sample.LOW_LOAD; break;
+					case Sample.DISCONNECT : sample.state = Sample.DISCONNECT; break;				
 				}
 				learnSet.set(m, sample); //update sample in learn set.
 			}
@@ -51,38 +45,38 @@ public class KMeans {
 			for (int m = 0; m < M; m++) {
 				sample = learnSet.get(m);
 				switch (sample.state) {
-					case HIGH_LOAD : 
+					case Sample.HIGH_LOAD : 
 						for (int n = 0; n < N; n++) {
-							delta[HIGH_LOAD][n] += (centroid[HIGH_LOAD][n]-sample.attribute[n])/frequency(learnSet,HIGH_LOAD);
+							delta[Sample.HIGH_LOAD][n] += (centroid[Sample.HIGH_LOAD][n]-sample.attribute[n])/frequency(learnSet,Sample.HIGH_LOAD);
 						}					
 						break;
-					case SHUT_DOWN : 
+					case Sample.SHUT_DOWN : 
 						for (int n = 0; n < N; n++) {
-							delta[SHUT_DOWN][n] += (centroid[SHUT_DOWN][n]-sample.attribute[n])/frequency(learnSet,SHUT_DOWN);
+							delta[Sample.SHUT_DOWN][n] += (centroid[Sample.SHUT_DOWN][n]-sample.attribute[n])/frequency(learnSet,Sample.SHUT_DOWN);
 						} 
 						break;
-					case LOW_LOAD : 
+					case Sample.LOW_LOAD : 
 						for (int n = 0; n < N; n++) {
-							delta[LOW_LOAD][n] += (centroid[LOW_LOAD][n]-sample.attribute[n])/frequency(learnSet,LOW_LOAD);
+							delta[Sample.LOW_LOAD][n] += (centroid[Sample.LOW_LOAD][n]-sample.attribute[n])/frequency(learnSet,Sample.LOW_LOAD);
 						} 
 						break;
-					case DISCONNECT :
+					case Sample.DISCONNECT :
 						for (int n = 0; n < N; n++) {
-							delta[DISCONNECT][n] += (centroid[DISCONNECT][n]-sample.attribute[n])/frequency(learnSet,DISCONNECT);
+							delta[Sample.DISCONNECT][n] += (centroid[Sample.DISCONNECT][n]-sample.attribute[n])/frequency(learnSet,Sample.DISCONNECT);
 						} 
 						break;			
 				}			
 			}			
 			
 			//Update centroids' position.
+			max_delta = 0.0;
 			for (int k=0; k < K; k++) {
 				for (int n=0; n < N; n++) {
 					centroid[k][n] += delta[k][n];
+					if (max_delta < delta[k][n]) max_delta = delta[k][n];
+					delta[k][n] = 0.0;
 				}
 			}
-			
-			//Update maximum movement of centroid.
-			max_delta = max(delta);
 		}
 	}
 	
@@ -108,20 +102,5 @@ public class KMeans {
 			}
 		}
 		return mindex;
-	}
-	
-	//*** DETERMINE MAX WITHIN MATRIX ***
-	private static double max(double[][] matrix) {
-		double max = 0.0;
-		int K = matrix.length;
-		int N = matrix[0].length;		
-		for (int k=0; k < K; k++) {
-			for (int n=0; n < N; n++) {
-				if (matrix[k][n] > max) {
-					max = matrix[k][n];
-				}
-			}
-		}		
-		return max;
 	}
 }
