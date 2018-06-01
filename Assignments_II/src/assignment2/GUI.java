@@ -7,9 +7,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -25,6 +27,8 @@ public class GUI {
 	private JTextField txtLearnSet;
 	private JTextField txtTestSet;
 	private JTable tblSets;
+	
+	String csvFile;
 
 	/**
 	 * Launch the application.
@@ -98,7 +102,7 @@ public class GUI {
 				String psswd = txtPassword.getText();
 				String lsname = txtLearnSet.getText();
 				String tsname = txtTestSet.getText();
-				Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname); //Execute main routine.
+				Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvFile); //Execute main routine.
 				
 				//Output results in a table.
 				DefaultTableModel tableData = new DefaultTableModel();			
@@ -152,32 +156,32 @@ public class GUI {
 		frame.getContentPane().add(txtHost);
 		
 		txtLearnSet = new JTextField();
-		txtLearnSet.setBounds(655, 86, 99, 20);
+		txtLearnSet.setBounds(655, 41, 99, 20);
 		txtLearnSet.setText("measurements");
 		txtLearnSet.setColumns(10);
 		frame.getContentPane().add(txtLearnSet);
 		
 		txtTestSet = new JTextField();
-		txtTestSet.setBounds(655, 111, 99, 20);
+		txtTestSet.setBounds(655, 74, 99, 20);
 		txtTestSet.setText("analog_values");
 		txtTestSet.setColumns(10);
 		frame.getContentPane().add(txtTestSet);
 		
 		JLabel lblLearnSet = new JLabel("Learn Set:");
-		lblLearnSet.setBounds(592, 89, 74, 14);
+		lblLearnSet.setBounds(592, 44, 74, 14);
 		frame.getContentPane().add(lblLearnSet);
 		
 		JLabel lblTestSet = new JLabel("Test Set:");
-		lblTestSet.setBounds(592, 114, 63, 14);
+		lblTestSet.setBounds(592, 77, 63, 14);
 		frame.getContentPane().add(lblTestSet);
 		
 		JLabel lblKthRoyalInstitute = new JLabel("KTH Royal Institute of Technology");
-		lblKthRoyalInstitute.setBounds(268, 78, 255, 20);
+		lblKthRoyalInstitute.setBounds(265, 50, 255, 20);
 		lblKthRoyalInstitute.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frame.getContentPane().add(lblKthRoyalInstitute);
 		
 		JLabel lblLearntestSets = new JLabel("Learn/Test Sets:");
-		lblLearntestSets.setBounds(608, 68, 146, 14);
+		lblLearntestSets.setBounds(592, 12, 146, 14);
 		lblLearntestSets.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(lblLearntestSets);
 		
@@ -198,12 +202,31 @@ public class GUI {
 		
 		JLabel lblAssignmentIi = new JLabel("Assignment II - Machine Learning");
 		lblAssignmentIi.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAssignmentIi.setBounds(245, 39, 315, 25);
+		lblAssignmentIi.setBounds(242, 11, 315, 25);
 		frame.getContentPane().add(lblAssignmentIi);
 		
 		JLabel lblByGpapakthse = new JLabel("By: gpapa@kth.se & fdl@kth.se");
 		lblByGpapakthse.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblByGpapakthse.setBounds(316, 106, 146, 25);
+		lblByGpapakthse.setBounds(313, 78, 146, 25);
 		frame.getContentPane().add(lblByGpapakthse);
+		
+		JButton btnCentroidsFile = new JButton("Centroids File...");
+		btnCentroidsFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(fileChooser);
+				
+				File file = null;
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    csvFile = file.getAbsolutePath();
+				    System.out.println("Chosen file: " + csvFile);
+				} else {
+				    System.out.println("Please select a valid file");
+				}
+			}
+		});
+		btnCentroidsFile.setBounds(592, 113, 162, 23);
+		frame.getContentPane().add(btnCentroidsFile);
 	}
 }
