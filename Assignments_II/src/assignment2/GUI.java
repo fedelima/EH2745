@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -12,6 +13,7 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -19,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class GUI {
 
-	private JFrame frame;
+	private JFrame frmSmartPowerSystem;
 	private JTextField txtUser;
 	private JPasswordField txtPassword;
 	private JTextField txtDatabase;
@@ -28,7 +30,7 @@ public class GUI {
 	private JTextField txtTestSet;
 	private JTable tblSets;
 	
-	String csvFile;
+	String csvFile = "";
 
 	/**
 	 * Launch the application.
@@ -38,7 +40,7 @@ public class GUI {
 			public void run() {
 				try {
 					GUI window = new GUI();
-					window.frame.setVisible(true);
+					window.frmSmartPowerSystem.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,43 +50,46 @@ public class GUI {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
 	 */
-	public GUI() {
+	public GUI() throws IOException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws IOException 
 	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 788, 513);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+	private void initialize() throws IOException {
+		frmSmartPowerSystem = new JFrame();
+		frmSmartPowerSystem.setTitle("Smart Power System State Classification");
+		frmSmartPowerSystem.setBounds(100, 100, 790, 513);
+		frmSmartPowerSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmSmartPowerSystem.getContentPane().setLayout(null);
 		
 		txtUser = new JTextField();
 		txtUser.setBounds(93, 89, 86, 20);
 		txtUser.setText("root");
 		txtUser.setColumns(10);
-		frame.getContentPane().add(txtUser);
+		frmSmartPowerSystem.getContentPane().add(txtUser);
 		
 		JLabel label = new JLabel("DB User:");
 		label.setBounds(20, 92, 52, 14);
-		frame.getContentPane().add(label);
+		frmSmartPowerSystem.getContentPane().add(label);
 		
 		JLabel label_1 = new JLabel("DB Psswd:");
 		label_1.setBounds(20, 117, 63, 14);
-		frame.getContentPane().add(label_1);
+		frmSmartPowerSystem.getContentPane().add(label_1);
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(93, 114, 86, 20);
 		txtPassword.setText("xxxx");
-		frame.getContentPane().add(txtPassword);
+		frmSmartPowerSystem.getContentPane().add(txtPassword);
 		
 		JLabel label_2 = new JLabel("Database Credentials:");
 		label_2.setBounds(20, 11, 146, 14);
 		label_2.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		frame.getContentPane().add(label_2);
+		frmSmartPowerSystem.getContentPane().add(label_2);
 		
 		JButton btnExecute = new JButton("Execute");
 		btnExecute.setBounds(20, 438, 734, 25);
@@ -102,7 +107,15 @@ public class GUI {
 				String psswd = txtPassword.getText();
 				String lsname = txtLearnSet.getText();
 				String tsname = txtTestSet.getText();
-				Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvFile); //Execute main routine.
+				
+				if (!csvFile.equals("")) {
+					Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvFile); //Execute main routine.
+				}else {
+					JOptionPane.showMessageDialog(frmSmartPowerSystem,
+						    "Please select a valid centroids file before proceeding !",
+						    "No centroids file selected",
+						    JOptionPane.WARNING_MESSAGE);
+				}
 				
 				//Output results in a table.
 				DefaultTableModel tableData = new DefaultTableModel();			
@@ -133,61 +146,61 @@ public class GUI {
 				tblSets.setModel(tableData);
 			}
 		});
-		frame.getContentPane().add(btnExecute);
+		frmSmartPowerSystem.getContentPane().add(btnExecute);
 		
 		JLabel lblDatabase = new JLabel("Database:");
-		lblDatabase.setBounds(20, 64, 52, 14);
-		frame.getContentPane().add(lblDatabase);
+		lblDatabase.setBounds(20, 64, 63, 14);
+		frmSmartPowerSystem.getContentPane().add(lblDatabase);
 		
 		txtDatabase = new JTextField();
 		txtDatabase.setBounds(93, 61, 86, 20);
 		txtDatabase.setText("assignment_2");
 		txtDatabase.setColumns(10);
-		frame.getContentPane().add(txtDatabase);
+		frmSmartPowerSystem.getContentPane().add(txtDatabase);
 		
 		JLabel lblHost = new JLabel("Host:");
 		lblHost.setBounds(20, 39, 52, 14);
-		frame.getContentPane().add(lblHost);
+		frmSmartPowerSystem.getContentPane().add(lblHost);
 		
 		txtHost = new JTextField();
 		txtHost.setBounds(93, 36, 86, 20);
 		txtHost.setText("localhost");
 		txtHost.setColumns(10);
-		frame.getContentPane().add(txtHost);
+		frmSmartPowerSystem.getContentPane().add(txtHost);
 		
 		txtLearnSet = new JTextField();
 		txtLearnSet.setBounds(655, 41, 99, 20);
 		txtLearnSet.setText("measurements");
 		txtLearnSet.setColumns(10);
-		frame.getContentPane().add(txtLearnSet);
+		frmSmartPowerSystem.getContentPane().add(txtLearnSet);
 		
 		txtTestSet = new JTextField();
 		txtTestSet.setBounds(655, 74, 99, 20);
 		txtTestSet.setText("analog_values");
 		txtTestSet.setColumns(10);
-		frame.getContentPane().add(txtTestSet);
+		frmSmartPowerSystem.getContentPane().add(txtTestSet);
 		
 		JLabel lblLearnSet = new JLabel("Learn Set:");
 		lblLearnSet.setBounds(592, 44, 74, 14);
-		frame.getContentPane().add(lblLearnSet);
+		frmSmartPowerSystem.getContentPane().add(lblLearnSet);
 		
 		JLabel lblTestSet = new JLabel("Test Set:");
 		lblTestSet.setBounds(592, 77, 63, 14);
-		frame.getContentPane().add(lblTestSet);
+		frmSmartPowerSystem.getContentPane().add(lblTestSet);
 		
 		JLabel lblKthRoyalInstitute = new JLabel("KTH Royal Institute of Technology");
-		lblKthRoyalInstitute.setBounds(265, 50, 255, 20);
+		lblKthRoyalInstitute.setBounds(246, 45, 255, 20);
 		lblKthRoyalInstitute.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		frame.getContentPane().add(lblKthRoyalInstitute);
+		frmSmartPowerSystem.getContentPane().add(lblKthRoyalInstitute);
 		
 		JLabel lblLearntestSets = new JLabel("Learn/Test Sets:");
 		lblLearntestSets.setBounds(592, 12, 146, 14);
 		lblLearntestSets.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		frame.getContentPane().add(lblLearntestSets);
+		frmSmartPowerSystem.getContentPane().add(lblLearntestSets);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(20, 152, 734, 275);
-		frame.getContentPane().add(scrollPane);
+		frmSmartPowerSystem.getContentPane().add(scrollPane);
 		
 		tblSets = new JTable();
 		tblSets.setModel(new DefaultTableModel(
@@ -200,17 +213,17 @@ public class GUI {
 		));
 		scrollPane.setViewportView(tblSets);
 		
-		JLabel lblAssignmentIi = new JLabel("Assignment II - Machine Learning");
+		JLabel lblAssignmentIi = new JLabel("Machine Learning in Power Systems");
 		lblAssignmentIi.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAssignmentIi.setBounds(242, 11, 315, 25);
-		frame.getContentPane().add(lblAssignmentIi);
+		lblAssignmentIi.setBounds(223, 11, 331, 25);
+		frmSmartPowerSystem.getContentPane().add(lblAssignmentIi);
 		
-		JLabel lblByGpapakthse = new JLabel("By: gpapa@kth.se & fdl@kth.se");
+		JLabel lblByGpapakthse = new JLabel("e-mails: gpapa@kth.se & fdl@kth.se");
 		lblByGpapakthse.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblByGpapakthse.setBounds(313, 78, 146, 25);
-		frame.getContentPane().add(lblByGpapakthse);
+		lblByGpapakthse.setBounds(286, 117, 170, 25);
+		frmSmartPowerSystem.getContentPane().add(lblByGpapakthse);
 		
-		JButton btnCentroidsFile = new JButton("Centroids File...");
+		JButton btnCentroidsFile = new JButton("Select centroids file...");
 		btnCentroidsFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -227,6 +240,26 @@ public class GUI {
 			}
 		});
 		btnCentroidsFile.setBounds(592, 113, 162, 23);
-		frame.getContentPane().add(btnCentroidsFile);
+		frmSmartPowerSystem.getContentPane().add(btnCentroidsFile);
+		
+		JLabel lblEhAssignment = new JLabel("EH2745 - Assignment II");
+		lblEhAssignment.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblEhAssignment.setBounds(286, 73, 150, 20);
+		frmSmartPowerSystem.getContentPane().add(lblEhAssignment);
+		
+		JLabel lblAuthorsGPapadopoulos = new JLabel("Authors: G. Papadopoulos & F. de Lima");
+		lblAuthorsGPapadopoulos.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblAuthorsGPapadopoulos.setBounds(272, 96, 192, 25);
+		frmSmartPowerSystem.getContentPane().add(lblAuthorsGPapadopoulos);
+		
+		JLabel label_3 = new JLabel("___________________");
+		label_3.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label_3.setBounds(18, 12, 133, 19);
+		frmSmartPowerSystem.getContentPane().add(label_3);
+		
+		JLabel label_4 = new JLabel("______________");
+		label_4.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label_4.setBounds(589, 12, 133, 19);
+		frmSmartPowerSystem.getContentPane().add(label_4);
 	}
 }
