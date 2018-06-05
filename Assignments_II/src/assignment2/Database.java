@@ -18,7 +18,7 @@ public class Database {
 	public static void buildSet(String host, String database,String user, String psswd, ArrayList<Sample> set, String tableName) {
 		try {	
 			//Connect to specified database.
-			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false";
+			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false&serverTimezone=UTC";
 			conn = DriverManager.getConnection(jdbcString, user, psswd);
 			query = conn.createStatement();
 			
@@ -46,7 +46,7 @@ public class Database {
 	public static void populateSet(String host, String database,String user, String psswd, ArrayList<Sample> set, String tableName) {
 		try {								
 			//Connect to specified database.
-			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false";
+			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false&serverTimezone=UTC";
 			conn = DriverManager.getConnection(jdbcString, user, psswd);
 			query = conn.createStatement();
 			
