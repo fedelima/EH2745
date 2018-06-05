@@ -1,14 +1,18 @@
 package assignment2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class KMeans {
 	//*** K-CLUSTERING ROUTINE ***
-	public static void Cluster(ArrayList<Sample> learnSet, String csvFile) {
-		double[][] centroids = csv2array(csvFile); //centroid's initial position	
+	public static void Cluster(ArrayList<Sample> learnSet, String csvin, String csvout) {
+		double[][] centroids = csv2array(csvin); //centroid's initial position	
 		int N = 9; //Number of buses in the system.
 		int M = learnSet.size(); //Number of samples.
 		int K = 4; //Number of centroids.
@@ -78,6 +82,9 @@ public class KMeans {
 				}
 			}
 		}
+		
+		//Output updated centroids position into csv file.
+		array2csv(centroids, csvout);
 	}
 	
 	//*** FREQUENCY OF STATE ***
@@ -132,5 +139,30 @@ public class KMeans {
 		}		
 		
 		return centroids;
+	}
+	
+	//*** WRITE ARRAY TO CSV FILE ***
+	public static void array2csv(double[][] output, String centroidFile) {
+		int K = output.length; //number of rows
+		int N = output[0].length; //number of columns
+		String line = null;
+		
+		try {
+			OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(centroidFile));
+			BufferedWriter bw = new BufferedWriter(fw);	
+			for (int k = 0; k < K; k++) {
+				for (int n = 0; n < N; n++) {
+					line = Double.toString(output[k][n]);
+					bw.write(line + ","); //write to file
+				}
+				bw.write("\n"); //newline
+			}			
+			bw.close();
+			fw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 }

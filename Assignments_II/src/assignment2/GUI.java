@@ -30,7 +30,7 @@ public class GUI {
 	private JTextField txtTestSet;
 	private JTable tblSets;
 	
-	String csvFile = "";
+	String csvin = "", csvout = "";
 
 	/**
 	 * Launch the application.
@@ -108,12 +108,12 @@ public class GUI {
 				String lsname = txtLearnSet.getText();
 				String tsname = txtTestSet.getText();
 				
-				if (!csvFile.equals("")) {
-					Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvFile); //Execute main routine.
+				if (!csvin.equals("") && !csvout.equals("")) {
+					Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvin, csvout); //Execute main routine.
 				}else {
 					JOptionPane.showMessageDialog(frmSmartPowerSystem,
-						    "Please select a valid centroids file before proceeding !",
-						    "No centroids file selected",
+						    "Please select valid centroids files before proceeding !",
+						    "Centroids file(s) missing",
 						    JOptionPane.WARNING_MESSAGE);
 				}
 				
@@ -169,27 +169,27 @@ public class GUI {
 		frmSmartPowerSystem.getContentPane().add(txtHost);
 		
 		txtLearnSet = new JTextField();
-		txtLearnSet.setBounds(655, 41, 99, 20);
+		txtLearnSet.setBounds(655, 37, 99, 20);
 		txtLearnSet.setText("measurements");
 		txtLearnSet.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtLearnSet);
 		
 		txtTestSet = new JTextField();
-		txtTestSet.setBounds(655, 74, 99, 20);
+		txtTestSet.setBounds(655, 62, 99, 20);
 		txtTestSet.setText("analog_values");
 		txtTestSet.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtTestSet);
 		
 		JLabel lblLearnSet = new JLabel("Learn Set:");
-		lblLearnSet.setBounds(592, 44, 74, 14);
+		lblLearnSet.setBounds(592, 40, 74, 14);
 		frmSmartPowerSystem.getContentPane().add(lblLearnSet);
 		
 		JLabel lblTestSet = new JLabel("Test Set:");
-		lblTestSet.setBounds(592, 77, 63, 14);
+		lblTestSet.setBounds(592, 65, 63, 14);
 		frmSmartPowerSystem.getContentPane().add(lblTestSet);
 		
 		JLabel lblKthRoyalInstitute = new JLabel("KTH Royal Institute of Technology");
-		lblKthRoyalInstitute.setBounds(246, 45, 255, 20);
+		lblKthRoyalInstitute.setBounds(252, 45, 255, 20);
 		lblKthRoyalInstitute.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frmSmartPowerSystem.getContentPane().add(lblKthRoyalInstitute);
 		
@@ -215,16 +215,16 @@ public class GUI {
 		
 		JLabel lblAssignmentIi = new JLabel("Machine Learning in Power Systems");
 		lblAssignmentIi.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAssignmentIi.setBounds(223, 11, 331, 25);
+		lblAssignmentIi.setBounds(229, 11, 331, 25);
 		frmSmartPowerSystem.getContentPane().add(lblAssignmentIi);
 		
 		JLabel lblByGpapakthse = new JLabel("e-mails: gpapa@kth.se & fdl@kth.se");
 		lblByGpapakthse.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblByGpapakthse.setBounds(286, 117, 170, 25);
+		lblByGpapakthse.setBounds(292, 117, 170, 25);
 		frmSmartPowerSystem.getContentPane().add(lblByGpapakthse);
 		
-		JButton btnCentroidsFile = new JButton("Select centroids file...");
-		btnCentroidsFile.addActionListener(new ActionListener() {
+		JButton btnCentroidsIn = new JButton("Input Centroids File...");
+		btnCentroidsIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fileChooser = new JFileChooser();
 				int returnVal = fileChooser.showOpenDialog(fileChooser);
@@ -232,24 +232,24 @@ public class GUI {
 				File file = null;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 				    file = fileChooser.getSelectedFile();
-				    csvFile = file.getAbsolutePath();
-				    System.out.println("Chosen file: " + csvFile);
+				    csvin = file.getAbsolutePath();
+				    System.out.println("Chosen file: " + csvin);
 				} else {
 				    System.out.println("Please select a valid file");
 				}
 			}
 		});
-		btnCentroidsFile.setBounds(592, 113, 162, 23);
-		frmSmartPowerSystem.getContentPane().add(btnCentroidsFile);
+		btnCentroidsIn.setBounds(592, 91, 162, 23);
+		frmSmartPowerSystem.getContentPane().add(btnCentroidsIn);
 		
 		JLabel lblEhAssignment = new JLabel("EH2745 - Assignment II");
 		lblEhAssignment.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEhAssignment.setBounds(286, 73, 150, 20);
+		lblEhAssignment.setBounds(292, 73, 150, 20);
 		frmSmartPowerSystem.getContentPane().add(lblEhAssignment);
 		
 		JLabel lblAuthorsGPapadopoulos = new JLabel("Authors: G. Papadopoulos & F. de Lima");
 		lblAuthorsGPapadopoulos.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblAuthorsGPapadopoulos.setBounds(272, 96, 192, 25);
+		lblAuthorsGPapadopoulos.setBounds(278, 96, 192, 25);
 		frmSmartPowerSystem.getContentPane().add(lblAuthorsGPapadopoulos);
 		
 		JLabel label_3 = new JLabel("___________________");
@@ -261,5 +261,24 @@ public class GUI {
 		label_4.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		label_4.setBounds(589, 12, 133, 19);
 		frmSmartPowerSystem.getContentPane().add(label_4);
+		
+		JButton btnCentroidsOut = new JButton("Output Centroids File...");
+		btnCentroidsOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fileChooser = new JFileChooser();
+				int returnVal = fileChooser.showOpenDialog(fileChooser);
+				
+				File file = null;
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+				    file = fileChooser.getSelectedFile();
+				    csvout = file.getAbsolutePath();
+				    System.out.println("Chosen file: " + csvout);
+				} else {
+				    System.out.println("Please select a valid file");
+				}
+			}
+		});
+		btnCentroidsOut.setBounds(592, 120, 162, 23);
+		frmSmartPowerSystem.getContentPane().add(btnCentroidsOut);
 	}
 }
