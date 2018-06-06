@@ -1,22 +1,15 @@
 package assignment2;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class KMeans {
 	//*** K-CLUSTERING ROUTINE ***
-	public static void Cluster(ArrayList<Sample> learnSet, String csvin, String csvout) {
-		double[][] centroids = csv2array(csvin); //centroid's initial position	
-		int N = 9; //Number of buses in the system.
-		int M = learnSet.size(); //Number of samples.
+	public static void Cluster(ArrayList<Sample> learnSet) {	
 		int K = 4; //Number of centroids.
-		int clusterWith; //Sample "m" belongs to which centroid? 
+		int N = learnSet.get(0).attribute.length; //Number of attributes per sample.
+		double[][] centroids = InitCentroids(K,N);		
+		int M = learnSet.size(); //Number of samples.
+
 		double dsq = 0.0;
 		double epsilon = 0.001;
 		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon
@@ -35,40 +28,34 @@ public class KMeans {
 					distance[m][k] = Math.sqrt(dsq); 
 					dsq = 0.0; //reset squared distance.
 				}
-				clusterWith = mindex(distance[m]);
-				switch (clusterWith) {
-					case Sample.HIGH_LOAD : sample.state = Sample.HIGH_LOAD; break;
-					case Sample.SHUT_DOWN : sample.state = Sample.SHUT_DOWN; break;
-					case Sample.LOW_LOAD : sample.state = Sample.LOW_LOAD; break;
-					case Sample.DISCONNECT : sample.state = Sample.DISCONNECT; break;				
-				}
+				sample.cluster = mindex(distance[m]);
 				learnSet.set(m, sample); //update sample in learn set.
 			}
 			
 			//Calculate centroids' displacement.
 			for (int m = 0; m < M; m++) {
 				sample = learnSet.get(m);
-				switch (sample.state) {
-					case Sample.HIGH_LOAD : 
+				switch (sample.cluster) {
+					case 0 : 
 						for (int n = 0; n < N; n++) {
-							delta[Sample.HIGH_LOAD][n] += (centroids[Sample.HIGH_LOAD][n]-sample.attribute[n])/frequency(learnSet,Sample.HIGH_LOAD);
+							delta[0][n] += (sample.attribute[n]-centroids[0][n])/frequency(learnSet,0);
 						}					
 						break;
-					case Sample.SHUT_DOWN : 
+					case 1 : 
 						for (int n = 0; n < N; n++) {
-							delta[Sample.SHUT_DOWN][n] += (centroids[Sample.SHUT_DOWN][n]-sample.attribute[n])/frequency(learnSet,Sample.SHUT_DOWN);
-						} 
+							delta[1][n] += (sample.attribute[n]-centroids[1][n])/frequency(learnSet,1);
+						}					
 						break;
-					case Sample.LOW_LOAD : 
+					case 2 : 
 						for (int n = 0; n < N; n++) {
-							delta[Sample.LOW_LOAD][n] += (centroids[Sample.LOW_LOAD][n]-sample.attribute[n])/frequency(learnSet,Sample.LOW_LOAD);
-						} 
+							delta[2][n] += (sample.attribute[n]-centroids[2][n])/frequency(learnSet,2);
+						}					
 						break;
-					case Sample.DISCONNECT :
+					case 3 :
 						for (int n = 0; n < N; n++) {
-							delta[Sample.DISCONNECT][n] += (centroids[Sample.DISCONNECT][n]-sample.attribute[n])/frequency(learnSet,Sample.DISCONNECT);
-						} 
-						break;			
+							delta[3][n] += (sample.attribute[n]-centroids[3][n])/frequency(learnSet,3);
+						}					
+						break;		
 				}			
 			}			
 			
@@ -82,16 +69,13 @@ public class KMeans {
 				}
 			}
 		}
-		
-		//Output updated centroids position into csv file.
-		array2csv(centroids, csvout);
 	}
 	
 	//*** FREQUENCY OF STATE ***
 	private static double frequency(ArrayList<Sample> set, int state) {
 		int count = 0;
 		for (Sample sample : set) {
-			if (state == sample.state) {
+			if (state == sample.cluster) {
 				count++;
 			}
 		}		
@@ -111,58 +95,14 @@ public class KMeans {
 		return mindex;
 	}
 	
-	//*** READ CSV FILE INTO ARRAY ***
-	public static double[][] csv2array(String centroidFile) {		
-		ArrayList<String> db = new ArrayList<String>();
-		
-		try {
-			FileReader fr = new FileReader(centroidFile);
-			BufferedReader br = new BufferedReader(fr);		
-			db = new ArrayList<String>();
-			String line = null;
-			while ((line = br.readLine()) != null) {db.add(line);}
-			br.close();
-		} catch (IOException e){
-			e.printStackTrace();
+	//*** RANDOMLY INITIALIZE CENTROIDS ***
+	private static double[][] InitCentroids(int K, int N) {
+		double[][] centroids = new double[K][N];
+		for (int k=0; k < K; k++) {
+			for (int n=0; n < N; n++) {
+				centroids[k][n] = Math.random();
+			}
 		}
-		
-		int K = db.size();
-		int N = db.get(0).split(",").length;		
-		String[] attributes = new String[N];
-		double[][] centroids = new double[K][N];		
-		
-		for (int k = 0; k < K; k++) {
-			attributes = db.get(k).split(",");
-			for (int n = 0; n < N; n++) {
-				centroids[k][n] = Double.parseDouble(attributes[n]);
-			}			
-		}		
-		
 		return centroids;
-	}
-	
-	//*** WRITE ARRAY TO CSV FILE ***
-	public static void array2csv(double[][] output, String centroidFile) {
-		int K = output.length; //number of rows
-		int N = output[0].length; //number of columns
-		String line = null;
-		
-		try {
-			OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(centroidFile));
-			BufferedWriter bw = new BufferedWriter(fw);	
-			for (int k = 0; k < K; k++) {
-				for (int n = 0; n < N; n++) {
-					line = Double.toString(output[k][n]);
-					bw.write(line + ","); //write to file
-				}
-				bw.write("\n"); //newline
-			}			
-			bw.close();
-			fw.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
 	}
 }

@@ -5,14 +5,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -107,15 +104,7 @@ public class GUI {
 				String psswd = txtPassword.getText();
 				String lsname = txtLearnSet.getText();
 				String tsname = txtTestSet.getText();
-				
-				if (!csvin.equals("") && !csvout.equals("")) {
-					Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname, csvin, csvout); //Execute main routine.
-				}else {
-					JOptionPane.showMessageDialog(frmSmartPowerSystem,
-						    "Please select valid centroids files before proceeding !",
-						    "Centroids file(s) missing",
-						    JOptionPane.WARNING_MESSAGE);
-				}
+				Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname); //Execute main routine.
 				
 				//Output results in a table.
 				DefaultTableModel tableData = new DefaultTableModel();			
@@ -125,20 +114,30 @@ public class GUI {
 				}
 				for (Sample sample : learnSet) {					
 					String[] row = new String[columnNames.length];
+					double magnitude, angle;
+					int n=2;
 					row[0] = "Learn";
-					row[1] = sample.time;
-					for (int i=0; i < sample.attribute.length; i++) {
-						row[i+2] = sample.attribute[i].toString(); 
+					row[1] = sample.time;					
+					for (int i=0; i < sample.attribute.length-1; i+=2) {
+						magnitude = Math.round(sample.attribute[i]*100.0)/100.0;
+						angle = Math.round(sample.attribute[i+1]*100.0)/100.0;						
+						row[n] = Double.toString(magnitude) + "/" + Double.toString(angle);
+						n++;
 					}
 					row[columnNames.length-1] = sample.GetState();
 					tableData.addRow(row);
 				}
 				for (Sample sample : testSet) {					
 					String[] row = new String[columnNames.length];
+					double magnitude, angle;
+					int n=2;
 					row[0] = "Test";
-					row[1] = sample.time;
-					for (int i=0; i < sample.attribute.length; i++) {
-						row[i+2] = sample.attribute[i].toString(); 
+					row[1] = sample.time;					
+					for (int i=0; i < sample.attribute.length-1; i+=2) {
+						magnitude = Math.round(sample.attribute[i]*100.0)/100.0;
+						angle = Math.round(sample.attribute[i+1]*100.0)/100.0;						
+						row[n] = Double.toString(magnitude) + "/" + Double.toString(angle);
+						n++;
 					}
 					row[columnNames.length-1] = sample.GetState();
 					tableData.addRow(row);
@@ -223,25 +222,6 @@ public class GUI {
 		lblByGpapakthse.setBounds(292, 117, 170, 25);
 		frmSmartPowerSystem.getContentPane().add(lblByGpapakthse);
 		
-		JButton btnCentroidsIn = new JButton("Input Centroids File...");
-		btnCentroidsIn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
-				int returnVal = fileChooser.showOpenDialog(fileChooser);
-				
-				File file = null;
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-				    file = fileChooser.getSelectedFile();
-				    csvin = file.getAbsolutePath();
-				    System.out.println("Chosen file: " + csvin);
-				} else {
-				    System.out.println("Please select a valid file");
-				}
-			}
-		});
-		btnCentroidsIn.setBounds(592, 91, 162, 23);
-		frmSmartPowerSystem.getContentPane().add(btnCentroidsIn);
-		
 		JLabel lblEhAssignment = new JLabel("EH2745 - Assignment II");
 		lblEhAssignment.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblEhAssignment.setBounds(292, 73, 150, 20);
@@ -261,24 +241,5 @@ public class GUI {
 		label_4.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		label_4.setBounds(589, 12, 133, 19);
 		frmSmartPowerSystem.getContentPane().add(label_4);
-		
-		JButton btnCentroidsOut = new JButton("Output Centroids File...");
-		btnCentroidsOut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fileChooser = new JFileChooser();
-				int returnVal = fileChooser.showOpenDialog(fileChooser);
-				
-				File file = null;
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-				    file = fileChooser.getSelectedFile();
-				    csvout = file.getAbsolutePath();
-				    System.out.println("Chosen file: " + csvout);
-				} else {
-				    System.out.println("Please select a valid file");
-				}
-			}
-		});
-		btnCentroidsOut.setBounds(592, 120, 162, 23);
-		frmSmartPowerSystem.getContentPane().add(btnCentroidsOut);
 	}
 }

@@ -8,11 +8,12 @@ public class KNN {
 		Sample sampleTest = null;
 		Sample sampleLearn = null;
 		double dsq = 0.0;
-		int N = 9; //Number of buses in the system.
+		int N = learnSet.get(0).attribute.length; //Number of buses in the system.
 		int M = learnSet.size(); //Number of learning samples.
 		int I = testSet.size(); //Number of testing samples.
 		int K = 5; //K-Number.
-		int[] state = new int[K];
+		int[] cluster = new int[K];
+		int[] count = new int[4];
 		double[][] distance = new double[M][2];
 
 		for (int i=0; i < I; i++) {		
@@ -26,11 +27,12 @@ public class KNN {
 				distance[m][1] = sampleLearn.state; 
 				dsq = 0.0; //reset squared distance.
 			}
-			state = sort(distance,K); //array with the K nearest neighbors classes
+			cluster = sort(distance,K); //array with the K nearest neighbors classes
 			for (int k=0; k < K; k++) {
-				sampleTest.state = (int) state[k];
-				testSet.set(i, sampleTest);
-			}			
+				count[cluster[k]]++;
+			}	
+			sampleTest.state = maxdex(count);
+			testSet.set(i, sampleTest);			
 		}
 	}
 	
@@ -52,5 +54,18 @@ public class KNN {
 			min = 1000.0; //restart for the following nearest neighbor
 		}
 		return state;
+	}
+	
+	//*** DETERMINE MAXIMUM VALUE INDEX WITHIN ARRAY ***
+	private static int maxdex(int[] x) {
+		int max = 0; //very high initial value
+		int maxdex = 0;
+		for (int i=0; i < x.length; i++) {
+			if (x[i] > max) {
+				max = x[i]; //update current minimum value
+				maxdex = i; //obtain minimum value index
+			}
+		}
+		return maxdex;
 	}
 }

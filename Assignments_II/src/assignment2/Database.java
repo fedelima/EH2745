@@ -22,10 +22,10 @@ public class Database {
 			conn = DriverManager.getConnection(jdbcString, user, psswd);
 			query = conn.createStatement();
 			
-			//Get number of buses in the system.		
+			//Get number of attributes per sample.		
 			ResultSet NBus = query.executeQuery("SELECT count(*) as NBus FROM substations");
 			NBus.next(); //place cursor on the first row.
-			int N =  Integer.parseInt(NBus.getString("NBus"));//Number of buses in the system.
+			int N =  2*Integer.parseInt(NBus.getString("NBus")); //Number of attributes per sample.
 			
 			//Convert tables to matrices.
 			String[][] matrix = Table2Matrix(tableName);
@@ -57,15 +57,15 @@ public class Database {
 			// Create table if it doesn't already exist.			
 			String createTable = "CREATE TABLE IF NOT EXISTS " + tableName+ "(" 
 		            + "Time VARCHAR(50),"  
-		            + "V1 DECIMAL(10,4)," 
-		            + "V2 DECIMAL(10,4),"
-		            + "V3 DECIMAL(10,4),"
-		            + "V4 DECIMAL(10,4),"
-		            + "V5 DECIMAL(10,4),"
-		            + "V6 DECIMAL(10,4),"
-		            + "V7 DECIMAL(10,4),"
-		            + "V8 DECIMAL(10,4),"
-		            + "V9 DECIMAL(10,4),"
+		            + "V1 DECIMAL(10,4),O1 DECIMAL(10,4)," 
+		            + "V2 DECIMAL(10,4),O2 DECIMAL(10,4),"
+		            + "V3 DECIMAL(10,4),O3 DECIMAL(10,4),"
+		            + "V4 DECIMAL(10,4),O4 DECIMAL(10,4),"
+		            + "V5 DECIMAL(10,4),O5 DECIMAL(10,4),"
+		            + "V6 DECIMAL(10,4),O6 DECIMAL(10,4),"
+		            + "V7 DECIMAL(10,4),O7 DECIMAL(10,4),"
+		            + "V8 DECIMAL(10,4),O8 DECIMAL(10,4),"
+		            + "V9 DECIMAL(10,4),O9 DECIMAL(10,4),"
 		            + "Class VARCHAR(50))"; 
 			boolean ResultSet2 = query.execute(createTable);
 			
@@ -73,15 +73,15 @@ public class Database {
 			for (Sample sample : set) {
 				String insertTable = "INSERT INTO " + tableName + " VALUES('" 
 						+ sample.time + "'," 
-						+ sample.attribute[0] + ","
-						+ sample.attribute[1] + ","
-						+ sample.attribute[2] + ","
-						+ sample.attribute[3] + ","
-						+ sample.attribute[4] + ","
-						+ sample.attribute[5] + ","
-						+ sample.attribute[6] + ","
-						+ sample.attribute[7] + ","
-						+ sample.attribute[8] + ",'"
+						+ sample.attribute[0] + "," + sample.attribute[1] + ","
+						+ sample.attribute[2] + "," + sample.attribute[3] + ","
+						+ sample.attribute[4] + "," + sample.attribute[5] + ","
+						+ sample.attribute[6] + "," + sample.attribute[7] + ","
+						+ sample.attribute[8] + "," + sample.attribute[9] + ","
+						+ sample.attribute[10] + "," + sample.attribute[11] + ","
+						+ sample.attribute[12] + "," + sample.attribute[13] + ","
+						+ sample.attribute[14] + "," + sample.attribute[15] + ","
+						+ sample.attribute[16] + "," + sample.attribute[17] + ",'"
 						+ sample.GetState() + "');";
 				int RowCount = query.executeUpdate(insertTable);
 			}
@@ -123,12 +123,12 @@ public class Database {
 		int m = 0; //Initialize sample counter.
 		int n = 0; //Initialize attribute counter.
 		int I = matrix.length; //Number of rows.
-		int M = I/(2*N); //Number of samples. 
+		int M = I/N; //Number of samples. 
 		
 		String[] time = new String[M];
-		Double[][] attribute = new Double[M][N];		
+		double[][] attribute = new double[M][N];
 		
-		for (int i=0; i < I; i+=2) {
+		for (int i=0; i < I; i++) {
 			time[m] = matrix[i][2];;
 			attribute[m][n] = Double.parseDouble(matrix[i][3]);
 			n++;		
