@@ -36,10 +36,10 @@ public class KLabel {
 		double[] o = new double[Nbus];
 		
 		for (int n=0; n < Nbus; n++) {
-			o[n] = centroid.attribute[2*n+1]/2*Math.PI;
+			o[n] = centroid.attribute[2*n+1]*Math.PI/180;
 		}
 		
-		double pmin = 0.1; //minimum power to assume generator is online
+		double pmin = 0.02; //minimum power to assume generator is online
 		double p14 = Math.abs(o[0]-o[3]); //flow through line 1-4
 		double p28 = Math.abs(o[1]-o[7]); //flow through line 2-8
 		double p36 = Math.abs(o[2]-o[5]); //flow through line 3-6
