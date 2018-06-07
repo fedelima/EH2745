@@ -11,11 +11,12 @@ public class KNN {
 		int N = learnSet.get(0).attribute.length; //Number of buses in the system.
 		int M = learnSet.size(); //Number of learning samples.
 		int I = testSet.size(); //Number of testing samples.
-		int K = 5; //selected K-Number.
+		int K = 5; //default K-Number.
 		int[] cluster = new int[K];
 		int[] counter = new int[centroids.size()];
 		double[][] distance = new double[M][2];
 
+		//Classify samples in the training set
 		for (int i=0; i < I; i++) {		
 			sampleTest = testSet.get(i);
 			for (int m=0; m < M; m++) {
@@ -24,11 +25,11 @@ public class KNN {
 					dsq += Math.pow(sampleTest.attribute[n] - sampleLearn.attribute[n], 2);					
 				}
 				distance[m][0] = Math.sqrt(dsq);
-				distance[m][1] = sampleLearn.state; 
+				distance[m][1] = sampleLearn.cluster; 
 				dsq = 0.0; //reset squared distance.
 			}
 			cluster = sort(distance,K); //array with the K nearest neighbors classes		
-			counter = count(cluster); //count cluster appearances
+			counter = count(cluster, counter.length); //count cluster appearances
 			sampleTest.cluster = maxdex(counter); //get most frequent cluster
 			testSet.set(i, sampleTest);			
 		}
@@ -55,15 +56,14 @@ public class KNN {
 	}
 	
 	//*** COUNT CLUSTER APPEARANCES ***
-	private static int[] count(int[] x) {
-		int K = 4;
-		int count[] = new int[K];
+	private static int[] count(int[] x, int K) {
+		int counter[] = new int[K];
 		for (int k=0; k < K; k++) {
 			for (int i=0; i < x.length; i++) {
-				if (k == x[i]) count[k]++;				
+				if (k == x[i]) counter[k]++;				
 			}			
 		}
-		return count;
+		return counter;
 	}
 	
 	//*** DETERMINE MAXIMUM VALUE INDEX WITHIN ARRAY ***
@@ -72,8 +72,8 @@ public class KNN {
 		int maxdex = 0;
 		for (int i=0; i < x.length; i++) {
 			if (x[i] > max) {
-				max = x[i]; //update current minimum value
-				maxdex = i; //obtain minimum value index
+				max = x[i]; //update current maximum value
+				maxdex = i; //obtain maximum value index
 			}
 		}
 		return maxdex;

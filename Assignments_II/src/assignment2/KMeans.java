@@ -6,16 +6,16 @@ import java.util.Random;
 public class KMeans {
 	//*** K-CLUSTERING ROUTINE ***
 	public static ArrayList<Sample> Cluster(ArrayList<Sample> learnSet, ArrayList<Sample> centroids) {	
-		int K = 4; //Number of centroids.
-		int N = learnSet.get(0).attribute.length; //Number of attributes per sample.				
-		int M = learnSet.size(); //Number of samples.
+		int K = 4; //default number of centroids.
+		int N = learnSet.get(0).attribute.length; //number of attributes per sample.				
+		int M = learnSet.size(); //number of samples.
 		double dsq = 0.0;
 		double epsilon = 0.001;
 		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon.
-		double[][] distance = new double[M][K]; //Distance from sample "m" to centroid "k".
-		double[][] delta = new double[K][N]; //Array to change centroid's position.
+		double[][] distance = new double[M][K]; //distance from sample "m" to centroid "k".
+		double[][] delta = new double[K][N]; //array to change centroid's position.
 		
-		InitCentroids(learnSet, centroids, K); //randomly initialize centroids.
+		InitCentroids(learnSet, centroids, K); //randomly initialize K centroids.
 		while (max_delta > epsilon) {
 			//Cluster samples with centroids.
 			for (int m = 0; m < M; m++) {
@@ -28,7 +28,7 @@ public class KMeans {
 					distance[m][k] = Math.sqrt(dsq); 
 					dsq = 0.0; //reset squared distance.
 				}
-				sample.cluster = mindex(distance[m]);
+				sample.cluster = mindex(distance[m]); //cluster with nearest centroid.
 				learnSet.set(m, sample); //update sample in learn set.
 			}
 			
@@ -84,7 +84,7 @@ public class KMeans {
 	private static void InitCentroids(ArrayList<Sample> learnSet, ArrayList<Sample> centroids, int K) {
 		int N = learnSet.get(0).attribute.length;
 		double[][] attribute = new double[K][N];
-		int min=0, max=200;
+		int min=0, max=199;
 		Random random = new Random();
 		for (int k=0; k < K; k++) {		
 			int rnd = random.nextInt((max - min) + 1) + min;

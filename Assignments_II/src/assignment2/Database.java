@@ -15,7 +15,7 @@ public class Database {
 	static Statement query = null;
 	
 	//*** BUILD LEARNING AND TEST SET FROM SQL DATA ***
-	public static void buildSet(String host, String database,String user, String psswd, ArrayList<Sample> set, String tableName) {
+	public static void buildSet(String host, String database, String user, String psswd, ArrayList<Sample> set, String tableName) {
 		try {	
 			//Connect to specified database.
 			jdbcString = "jdbc:mysql://" + host + ":3306/" + database + "?useSSL=false&serverTimezone=UTC";
@@ -56,17 +56,17 @@ public class Database {
 			
 			// Create table if it doesn't already exist.			
 			String createTable = "CREATE TABLE IF NOT EXISTS " + tableName+ "(" 
-		            + "id VARCHAR(50),"  
-		            + "v1 DECIMAL(10,4),o1 DECIMAL(10,4)," 
-		            + "v2 DECIMAL(10,4),o2 DECIMAL(10,4),"
-		            + "v3 DECIMAL(10,4),o3 DECIMAL(10,4),"
-		            + "v4 DECIMAL(10,4),o4 DECIMAL(10,4),"
-		            + "v5 DECIMAL(10,4),o5 DECIMAL(10,4),"
-		            + "v6 DECIMAL(10,4),o6 DECIMAL(10,4),"
-		            + "v7 DECIMAL(10,4),o7 DECIMAL(10,4),"
-		            + "v8 DECIMAL(10,4),o8 DECIMAL(10,4),"
-		            + "v9 DECIMAL(10,4),o9 DECIMAL(10,4),"
-		            + "class VARCHAR(50))"; 
+		            + "ID VARCHAR(50),"  
+		            + "V1 DECIMAL(10,4),O1 DECIMAL(10,4)," 
+		            + "V2 DECIMAL(10,4),O2 DECIMAL(10,4),"
+		            + "V3 DECIMAL(10,4),O3 DECIMAL(10,4),"
+		            + "V4 DECIMAL(10,4),O4 DECIMAL(10,4),"
+		            + "V5 DECIMAL(10,4),O5 DECIMAL(10,4),"
+		            + "V6 DECIMAL(10,4),O6 DECIMAL(10,4),"
+		            + "V7 DECIMAL(10,4),O7 DECIMAL(10,4),"
+		            + "V8 DECIMAL(10,4),O8 DECIMAL(10,4),"
+		            + "V9 DECIMAL(10,4),O9 DECIMAL(10,4),"
+		            + "Class VARCHAR(50))"; 
 			boolean ResultSet2 = query.execute(createTable);
 			
 			// Insert records into table.
@@ -133,7 +133,7 @@ public class Database {
 			attribute[m][n] = Double.parseDouble(matrix[i][3]);
 			n++;		
 			if (n >= N){
-				set.add(new Sample(id[m], attribute[m], 0));
+				set.add(new Sample(id[m], attribute[m], -1));
 				m++; //next sample
 				n = 0; //reset attribute pointer
 			}
