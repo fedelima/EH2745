@@ -27,8 +27,8 @@ public class GUI {
 	private JTextField txtTestSet;
 	private JTable tblSets;
 	
-	String csvin = "", csvout = "";
-
+	JLabel lblCentroid1, lblCentroid2, lblCentroid3, lblCentroid4;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -60,26 +60,26 @@ public class GUI {
 	private void initialize() throws IOException {
 		frmSmartPowerSystem = new JFrame();
 		frmSmartPowerSystem.setTitle("Smart Power System State Classification");
-		frmSmartPowerSystem.setBounds(100, 100, 790, 513);
+		frmSmartPowerSystem.setBounds(100, 100, 919, 533);
 		frmSmartPowerSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSmartPowerSystem.getContentPane().setLayout(null);
 		
 		txtUser = new JTextField();
-		txtUser.setBounds(93, 89, 86, 20);
+		txtUser.setBounds(93, 101, 86, 20);
 		txtUser.setText("root");
 		txtUser.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtUser);
 		
 		JLabel label = new JLabel("DB User:");
-		label.setBounds(20, 92, 52, 14);
+		label.setBounds(20, 104, 52, 14);
 		frmSmartPowerSystem.getContentPane().add(label);
 		
 		JLabel label_1 = new JLabel("DB Psswd:");
-		label_1.setBounds(20, 117, 63, 14);
+		label_1.setBounds(20, 137, 63, 14);
 		frmSmartPowerSystem.getContentPane().add(label_1);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(93, 114, 86, 20);
+		txtPassword.setBounds(93, 134, 86, 20);
 		txtPassword.setText("xxxx");
 		frmSmartPowerSystem.getContentPane().add(txtPassword);
 		
@@ -89,13 +89,14 @@ public class GUI {
 		frmSmartPowerSystem.getContentPane().add(label_2);
 		
 		JButton btnExecute = new JButton("Execute");
-		btnExecute.setBounds(20, 438, 734, 25);
+		btnExecute.setBounds(20, 458, 862, 25);
 		btnExecute.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				//Define variables.
 				ArrayList<Sample> learnSet = new ArrayList<Sample>();
 				ArrayList<Sample> testSet = new ArrayList<Sample>();
+				ArrayList<Sample> centroids = new ArrayList<Sample>();
 				
 				//Capture values from GUI.
 				String host = txtHost.getText();
@@ -104,55 +105,42 @@ public class GUI {
 				String psswd = txtPassword.getText();
 				String lsname = txtLearnSet.getText();
 				String tsname = txtTestSet.getText();
-				Assignment_II.execute(learnSet, testSet, host, database, user, psswd, lsname, tsname); //Execute main routine.
+				Assignment_II.execute(learnSet, testSet, centroids, host, database, user, psswd, lsname, tsname); //execute main routine.
+				
+				//Count clustered samples.
+				int K = centroids.size();
+				int[] count = new int[K];
+				for (Sample sample : learnSet) {
+					for (int k=0; k < K; k++) {
+						Sample centroid = centroids.get(k);
+						if (sample.cluster == centroid.cluster) count[k]++;
+					}
+				}
+				lblCentroid1.setText("Centroid 1: " + count[0] + " samples " + "("+centroids.get(0).GetState()+")");
+				lblCentroid2.setText("Centroid 2: " + count[1] + " samples " +"("+centroids.get(1).GetState()+")");
+				lblCentroid3.setText("Centroid 3: " + count[2] + " samples " +"("+centroids.get(2).GetState()+")");
+				lblCentroid4.setText("Centroid 4: " + count[3] + " samples " +"("+centroids.get(3).GetState()+")");
 				
 				//Output results in a table.
 				DefaultTableModel tableData = new DefaultTableModel();			
-				String[] columnNames = {"Set","Time","V1","V2","V3","V4", "V5", "V6", "V7","V8","V9","Class"};				
+				String[] columnNames = {"set","id","v1","v2","v3","v4","v5","v6","v7","v8","v9","class"};				
 				for (int i = 0; i < columnNames.length; i++) {
 					tableData.addColumn(columnNames[i]);
 				}
-				for (Sample sample : learnSet) {					
-					String[] row = new String[columnNames.length];
-					double magnitude, angle;
-					int n=2;
-					row[0] = "Learn";
-					row[1] = sample.time;					
-					for (int i=0; i < sample.attribute.length-1; i+=2) {
-						magnitude = Math.round(sample.attribute[i]*100.0)/100.0;
-						angle = Math.round(sample.attribute[i+1]*100.0)/100.0;						
-						row[n] = Double.toString(magnitude) + "/" + Double.toString(angle);
-						n++;
-					}
-					row[columnNames.length-1] = sample.GetState();
-					tableData.addRow(row);
-				}
-				for (Sample sample : testSet) {					
-					String[] row = new String[columnNames.length];
-					double magnitude, angle;
-					int n=2;
-					row[0] = "Test";
-					row[1] = sample.time;					
-					for (int i=0; i < sample.attribute.length-1; i+=2) {
-						magnitude = Math.round(sample.attribute[i]*100.0)/100.0;
-						angle = Math.round(sample.attribute[i+1]*100.0)/100.0;						
-						row[n] = Double.toString(magnitude) + "/" + Double.toString(angle);
-						n++;
-					}
-					row[columnNames.length-1] = sample.GetState();
-					tableData.addRow(row);
-				}
+				IncludeSet("Centroids", tableData, centroids);
+				IncludeSet("Learn Set", tableData, learnSet);
+				IncludeSet("Test Set", tableData, testSet);				
 				tblSets.setModel(tableData);
 			}
 		});
 		frmSmartPowerSystem.getContentPane().add(btnExecute);
 		
 		JLabel lblDatabase = new JLabel("Database:");
-		lblDatabase.setBounds(20, 64, 63, 14);
+		lblDatabase.setBounds(20, 70, 63, 14);
 		frmSmartPowerSystem.getContentPane().add(lblDatabase);
 		
 		txtDatabase = new JTextField();
-		txtDatabase.setBounds(93, 61, 86, 20);
+		txtDatabase.setBounds(93, 67, 86, 20);
 		txtDatabase.setText("assignment_2");
 		txtDatabase.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtDatabase);
@@ -168,37 +156,37 @@ public class GUI {
 		frmSmartPowerSystem.getContentPane().add(txtHost);
 		
 		txtLearnSet = new JTextField();
-		txtLearnSet.setBounds(655, 37, 99, 20);
+		txtLearnSet.setBounds(709, 37, 99, 20);
 		txtLearnSet.setText("measurements");
 		txtLearnSet.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtLearnSet);
 		
 		txtTestSet = new JTextField();
-		txtTestSet.setBounds(655, 62, 99, 20);
+		txtTestSet.setBounds(709, 62, 99, 20);
 		txtTestSet.setText("analog_values");
 		txtTestSet.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtTestSet);
 		
 		JLabel lblLearnSet = new JLabel("Learn Set:");
-		lblLearnSet.setBounds(592, 40, 74, 14);
+		lblLearnSet.setBounds(646, 40, 74, 14);
 		frmSmartPowerSystem.getContentPane().add(lblLearnSet);
 		
 		JLabel lblTestSet = new JLabel("Test Set:");
-		lblTestSet.setBounds(592, 65, 63, 14);
+		lblTestSet.setBounds(646, 65, 63, 14);
 		frmSmartPowerSystem.getContentPane().add(lblTestSet);
 		
 		JLabel lblKthRoyalInstitute = new JLabel("KTH Royal Institute of Technology");
-		lblKthRoyalInstitute.setBounds(252, 45, 255, 20);
+		lblKthRoyalInstitute.setBounds(306, 56, 255, 20);
 		lblKthRoyalInstitute.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		frmSmartPowerSystem.getContentPane().add(lblKthRoyalInstitute);
 		
 		JLabel lblLearntestSets = new JLabel("Learn/Test Sets:");
-		lblLearntestSets.setBounds(592, 12, 146, 14);
+		lblLearntestSets.setBounds(646, 12, 146, 14);
 		lblLearntestSets.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frmSmartPowerSystem.getContentPane().add(lblLearntestSets);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 152, 734, 275);
+		scrollPane.setBounds(20, 168, 862, 279);
 		frmSmartPowerSystem.getContentPane().add(scrollPane);
 		
 		tblSets = new JTable();
@@ -207,29 +195,29 @@ public class GUI {
 				{null, null, null, null, null, null, null, null, null, null, null},
 			},
 			new String[] {
-					"Set","Time","V1","V2","V3","V4", "V5", "V6", "V7","V8","V9","Class"
+					"set","id","v1","v2","v3","v4","v5","v6","v7","v8","v9","class"
 			}
 		));
 		scrollPane.setViewportView(tblSets);
 		
 		JLabel lblAssignmentIi = new JLabel("Machine Learning in Power Systems");
 		lblAssignmentIi.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblAssignmentIi.setBounds(229, 11, 331, 25);
+		lblAssignmentIi.setBounds(267, 22, 331, 25);
 		frmSmartPowerSystem.getContentPane().add(lblAssignmentIi);
 		
 		JLabel lblByGpapakthse = new JLabel("e-mails: gpapa@kth.se & fdl@kth.se");
 		lblByGpapakthse.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblByGpapakthse.setBounds(292, 117, 170, 25);
+		lblByGpapakthse.setBounds(335, 126, 170, 25);
 		frmSmartPowerSystem.getContentPane().add(lblByGpapakthse);
 		
 		JLabel lblEhAssignment = new JLabel("EH2745 - Assignment II");
 		lblEhAssignment.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEhAssignment.setBounds(292, 73, 150, 20);
+		lblEhAssignment.setBounds(347, 82, 150, 20);
 		frmSmartPowerSystem.getContentPane().add(lblEhAssignment);
 		
 		JLabel lblAuthorsGPapadopoulos = new JLabel("Authors: G. Papadopoulos & F. de Lima");
 		lblAuthorsGPapadopoulos.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblAuthorsGPapadopoulos.setBounds(278, 96, 192, 25);
+		lblAuthorsGPapadopoulos.setBounds(325, 103, 192, 25);
 		frmSmartPowerSystem.getContentPane().add(lblAuthorsGPapadopoulos);
 		
 		JLabel label_3 = new JLabel("___________________");
@@ -239,7 +227,42 @@ public class GUI {
 		
 		JLabel label_4 = new JLabel("______________");
 		label_4.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label_4.setBounds(589, 12, 133, 19);
+		label_4.setBounds(646, 12, 133, 19);
 		frmSmartPowerSystem.getContentPane().add(label_4);
+		
+		lblCentroid1 = new JLabel("Centroid 1: ## samples (??)");
+		lblCentroid1.setBounds(646, 88, 236, 14);
+		frmSmartPowerSystem.getContentPane().add(lblCentroid1);
+		
+		lblCentroid2 = new JLabel("Centroid 2: ## samples (??)");
+		lblCentroid2.setBounds(646, 105, 236, 14);
+		frmSmartPowerSystem.getContentPane().add(lblCentroid2);
+		
+		lblCentroid3 = new JLabel("Centroid 3: ## samples (??)");
+		lblCentroid3.setBounds(646, 121, 236, 14);
+		frmSmartPowerSystem.getContentPane().add(lblCentroid3);
+		
+		lblCentroid4 = new JLabel("Centroid 4: ## samples (??)");
+		lblCentroid4.setBounds(646, 139, 236, 14);
+		frmSmartPowerSystem.getContentPane().add(lblCentroid4);
+	}
+	
+	//*** INCLUDE SET TO SHOW IN GUI ***
+	private static void IncludeSet(String setName, DefaultTableModel tableData, ArrayList<Sample> set) {
+		for (Sample sample : set) {				
+			String[] row = new String[tableData.getColumnCount()];
+			double magnitude, angle;
+			int n=2;
+			row[0] = setName;
+			row[1] = Integer.toString(sample.id);					
+			for (int i=0; i < sample.attribute.length-1; i+=2) {
+				magnitude = Math.round(sample.attribute[i]*100.0)/100.0;
+				angle = Math.round(sample.attribute[i+1]*100.0)/100.0;						
+				row[n] = Double.toString(magnitude) + "/" + Double.toString(angle);
+				n++;
+			}
+			row[tableData.getColumnCount()-1] = sample.GetState();
+			tableData.addRow(row);
+		}
 	}
 }

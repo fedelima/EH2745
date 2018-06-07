@@ -1,29 +1,29 @@
 package assignment2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class KMeans {
 	//*** K-CLUSTERING ROUTINE ***
-	public static void Cluster(ArrayList<Sample> learnSet) {	
+	public static ArrayList<Sample> Cluster(ArrayList<Sample> learnSet, ArrayList<Sample> centroids) {	
 		int K = 4; //Number of centroids.
-		int N = learnSet.get(0).attribute.length; //Number of attributes per sample.
-		double[][] centroids = InitCentroids(K,N);		
+		int N = learnSet.get(0).attribute.length; //Number of attributes per sample.				
 		int M = learnSet.size(); //Number of samples.
-
 		double dsq = 0.0;
 		double epsilon = 0.001;
-		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon
-		double[][] distance = new double[M][K]; //Distance from sample "m" to centroid "k"
-		double[][] delta = new double[K][N]; //Array to change centroid's position
-		Sample sample = null;
-
+		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon.
+		double[][] distance = new double[M][K]; //Distance from sample "m" to centroid "k".
+		double[][] delta = new double[K][N]; //Array to change centroid's position.
+		
+		InitCentroids(learnSet, centroids, K); //randomly initialize centroids.
 		while (max_delta > epsilon) {
 			//Cluster samples with centroids.
 			for (int m = 0; m < M; m++) {
-				sample = learnSet.get(m);
+				Sample sample = learnSet.get(m);
 				for (int k = 0; k < K; k++) {				
+					Sample centroid = centroids.get(k);
 					for (int n = 0; n < N; n++) {
-						dsq += Math.pow(centroids[k][n] - sample.attribute[n], 2);					
+						dsq += Math.pow(centroid.attribute[n] - sample.attribute[n], 2);					
 					}				
 					distance[m][k] = Math.sqrt(dsq); 
 					dsq = 0.0; //reset squared distance.
@@ -34,48 +34,33 @@ public class KMeans {
 			
 			//Calculate centroids' displacement.
 			for (int m = 0; m < M; m++) {
-				sample = learnSet.get(m);
-				switch (sample.cluster) {
-					case 0 : 
-						for (int n = 0; n < N; n++) {
-							delta[0][n] += (sample.attribute[n]-centroids[0][n])/frequency(learnSet,0);
-						}					
-						break;
-					case 1 : 
-						for (int n = 0; n < N; n++) {
-							delta[1][n] += (sample.attribute[n]-centroids[1][n])/frequency(learnSet,1);
-						}					
-						break;
-					case 2 : 
-						for (int n = 0; n < N; n++) {
-							delta[2][n] += (sample.attribute[n]-centroids[2][n])/frequency(learnSet,2);
-						}					
-						break;
-					case 3 :
-						for (int n = 0; n < N; n++) {
-							delta[3][n] += (sample.attribute[n]-centroids[3][n])/frequency(learnSet,3);
-						}					
-						break;		
+				Sample sample = learnSet.get(m);
+				Sample centroid = centroids.get(sample.cluster);
+				for (int n = 0; n < N; n++) {
+					delta[centroid.cluster][n] += (sample.attribute[n]-centroid.attribute[n])/frequency(learnSet,centroid.cluster);
 				}			
 			}			
 			
 			//Update centroids' position.
 			max_delta = 0.0;
 			for (int k=0; k < K; k++) {
+				Sample centroid = centroids.get(k);
 				for (int n=0; n < N; n++) {
-					centroids[k][n] += delta[k][n];
+					centroid.attribute[n] += delta[k][n];					
 					if (max_delta < delta[k][n]) max_delta = delta[k][n];
 					delta[k][n] = 0.0;
 				}
+				centroids.set(k, centroid);
 			}
 		}
+		return centroids;
 	}
 	
-	//*** FREQUENCY OF STATE ***
-	private static double frequency(ArrayList<Sample> set, int state) {
+	//*** FREQUENCY OF CLUSTER ***
+	private static double frequency(ArrayList<Sample> set, int k) {
 		int count = 0;
 		for (Sample sample : set) {
-			if (state == sample.cluster) {
+			if (sample.cluster == k) {
 				count++;
 			}
 		}		
@@ -96,13 +81,15 @@ public class KMeans {
 	}
 	
 	//*** RANDOMLY INITIALIZE CENTROIDS ***
-	private static double[][] InitCentroids(int K, int N) {
-		double[][] centroids = new double[K][N];
-		for (int k=0; k < K; k++) {
-			for (int n=0; n < N; n++) {
-				centroids[k][n] = Math.random();
-			}
+	private static void InitCentroids(ArrayList<Sample> learnSet, ArrayList<Sample> centroids, int K) {
+		int N = learnSet.get(0).attribute.length;
+		double[][] attribute = new double[K][N];
+		int min=0, max=200;
+		Random random = new Random();
+		for (int k=0; k < K; k++) {		
+			int rnd = random.nextInt((max - min) + 1) + min;
+			attribute[k] = learnSet.get(rnd).attribute;
+			centroids.add(new Sample(k+1, attribute[k], k));
 		}
-		return centroids;
 	}
 }

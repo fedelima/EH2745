@@ -56,23 +56,23 @@ public class Database {
 			
 			// Create table if it doesn't already exist.			
 			String createTable = "CREATE TABLE IF NOT EXISTS " + tableName+ "(" 
-		            + "Time VARCHAR(50),"  
-		            + "V1 DECIMAL(10,4),O1 DECIMAL(10,4)," 
-		            + "V2 DECIMAL(10,4),O2 DECIMAL(10,4),"
-		            + "V3 DECIMAL(10,4),O3 DECIMAL(10,4),"
-		            + "V4 DECIMAL(10,4),O4 DECIMAL(10,4),"
-		            + "V5 DECIMAL(10,4),O5 DECIMAL(10,4),"
-		            + "V6 DECIMAL(10,4),O6 DECIMAL(10,4),"
-		            + "V7 DECIMAL(10,4),O7 DECIMAL(10,4),"
-		            + "V8 DECIMAL(10,4),O8 DECIMAL(10,4),"
-		            + "V9 DECIMAL(10,4),O9 DECIMAL(10,4),"
-		            + "Class VARCHAR(50))"; 
+		            + "id VARCHAR(50),"  
+		            + "v1 DECIMAL(10,4),o1 DECIMAL(10,4)," 
+		            + "v2 DECIMAL(10,4),o2 DECIMAL(10,4),"
+		            + "v3 DECIMAL(10,4),o3 DECIMAL(10,4),"
+		            + "v4 DECIMAL(10,4),o4 DECIMAL(10,4),"
+		            + "v5 DECIMAL(10,4),o5 DECIMAL(10,4),"
+		            + "v6 DECIMAL(10,4),o6 DECIMAL(10,4),"
+		            + "v7 DECIMAL(10,4),o7 DECIMAL(10,4),"
+		            + "v8 DECIMAL(10,4),o8 DECIMAL(10,4),"
+		            + "v9 DECIMAL(10,4),o9 DECIMAL(10,4),"
+		            + "class VARCHAR(50))"; 
 			boolean ResultSet2 = query.execute(createTable);
 			
 			// Insert records into table.
 			for (Sample sample : set) {
 				String insertTable = "INSERT INTO " + tableName + " VALUES('" 
-						+ sample.time + "'," 
+						+ sample.id + "'," 
 						+ sample.attribute[0] + "," + sample.attribute[1] + ","
 						+ sample.attribute[2] + "," + sample.attribute[3] + ","
 						+ sample.attribute[4] + "," + sample.attribute[5] + ","
@@ -125,15 +125,15 @@ public class Database {
 		int I = matrix.length; //Number of rows.
 		int M = I/N; //Number of samples. 
 		
-		String[] time = new String[M];
+		int[] id = new int[M];
 		double[][] attribute = new double[M][N];
 		
 		for (int i=0; i < I; i++) {
-			time[m] = matrix[i][2];;
+			id[m] = Integer.parseInt(matrix[i][2]);
 			attribute[m][n] = Double.parseDouble(matrix[i][3]);
 			n++;		
 			if (n >= N){
-				set.add(new Sample(time[m], attribute[m]));
+				set.add(new Sample(id[m], attribute[m], 0));
 				m++; //next sample
 				n = 0; //reset attribute pointer
 			}

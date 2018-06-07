@@ -6,16 +6,17 @@ public class Sample {
 	static final int LOW_LOAD = 3;
 	static final int DISCONNECT = 4;
 	
-	String time;
+	int id, cluster, state;
 	double[] attribute;
-	int cluster;
-	int state;
 	
-	public Sample(String time, double[] attribute) {
-		this.time = time;
+	//*** CONSTRUCTOR ***
+	public Sample(int id, double[] attribute, int cluster) {
+		this.id = id;
 		this.attribute = attribute;
+		this.cluster = cluster;
 	}
 
+	//*** GET STATE ***
 	public String GetState() {
 		String condition = null;
 		switch (this.state) {

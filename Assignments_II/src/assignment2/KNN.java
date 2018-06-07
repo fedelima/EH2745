@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 public class KNN {
 	//*** KNN SAMPLE CLASSIFICATION ***
-	public static void Classify(ArrayList<Sample> learnSet,ArrayList<Sample> testSet) {
+	public static void Classify(ArrayList<Sample> learnSet, ArrayList<Sample> testSet, ArrayList<Sample> centroids) {
 		Sample sampleTest = null;
 		Sample sampleLearn = null;
 		double dsq = 0.0;
 		int N = learnSet.get(0).attribute.length; //Number of buses in the system.
 		int M = learnSet.size(); //Number of learning samples.
 		int I = testSet.size(); //Number of testing samples.
-		int K = 5; //K-Number.
+		int K = 5; //selected K-Number.
 		int[] cluster = new int[K];
-		int[] count = new int[4];
+		int[] counter = new int[centroids.size()];
 		double[][] distance = new double[M][2];
 
 		for (int i=0; i < I; i++) {		
@@ -27,11 +27,9 @@ public class KNN {
 				distance[m][1] = sampleLearn.state; 
 				dsq = 0.0; //reset squared distance.
 			}
-			cluster = sort(distance,K); //array with the K nearest neighbors classes
-			for (int k=0; k < K; k++) {
-				count[cluster[k]]++;
-			}	
-			sampleTest.state = maxdex(count);
+			cluster = sort(distance,K); //array with the K nearest neighbors classes		
+			counter = count(cluster); //count cluster appearances
+			sampleTest.cluster = maxdex(counter); //get most frequent cluster
 			testSet.set(i, sampleTest);			
 		}
 	}
@@ -54,6 +52,18 @@ public class KNN {
 			min = 1000.0; //restart for the following nearest neighbor
 		}
 		return state;
+	}
+	
+	//*** COUNT CLUSTER APPEARANCES ***
+	private static int[] count(int[] x) {
+		int K = 4;
+		int count[] = new int[K];
+		for (int k=0; k < K; k++) {
+			for (int i=0; i < x.length; i++) {
+				if (k == x[i]) count[k]++;				
+			}			
+		}
+		return count;
 	}
 	
 	//*** DETERMINE MAXIMUM VALUE INDEX WITHIN ARRAY ***
