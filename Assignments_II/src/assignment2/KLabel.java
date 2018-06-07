@@ -59,8 +59,8 @@ public class KLabel {
 			v[n] = centroid.attribute[2*n];
 		}
 		
-		if (v[4] + v[6] + v[8] > 3.03) {
-			//buses 5, 7 and 9 have high voltages
+		if (v[5] + v[6] + v[7] > 3.03) {
+			//buses 6, 7 and 8 have high voltages
 			centroid.state = Sample.LOW_LOAD;
 		}		
 	}

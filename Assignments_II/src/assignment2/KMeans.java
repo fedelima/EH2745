@@ -13,9 +13,8 @@ public class KMeans {
 		double epsilon = 0.001;
 		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon.
 		double[][] distance = new double[M][K]; //distance from sample "m" to centroid "k".
-		double[][] delta = new double[K][N]; //array to change centroid's position.
 		
-		InitCentroids(learnSet, centroids, K); //randomly initialize K centroids.
+		Forgy(learnSet, centroids, K); //initialize K centroids using Forgy's algorithm.
 		while (max_delta > epsilon) {
 			//Cluster samples with centroids.
 			for (int m = 0; m < M; m++) {
@@ -33,6 +32,7 @@ public class KMeans {
 			}
 			
 			//Calculate centroids' displacement.
+			double[][] delta = new double[K][N]; //array to change centroid's position.
 			for (int m = 0; m < M; m++) {
 				Sample sample = learnSet.get(m);
 				Sample centroid = centroids.get(sample.cluster);
@@ -80,11 +80,11 @@ public class KMeans {
 		return mindex;
 	}
 	
-	//*** RANDOMLY INITIALIZE CENTROIDS ***
-	private static void InitCentroids(ArrayList<Sample> learnSet, ArrayList<Sample> centroids, int K) {
+	//*** FORGY INITIALIZATION ALGORITHM ***
+	private static void Forgy(ArrayList<Sample> learnSet, ArrayList<Sample> centroids, int K) {
 		int N = learnSet.get(0).attribute.length;
 		double[][] attribute = new double[K][N];
-		int min=0, max=199;
+		int min = 0, max = 199;
 		Random random = new Random();
 		for (int k=0; k < K; k++) {		
 			int rnd = random.nextInt((max - min) + 1) + min;
