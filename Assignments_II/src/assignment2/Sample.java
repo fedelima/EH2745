@@ -1,10 +1,10 @@
 package assignment2;
 
 public class Sample {
-	static final int HIGH_LOAD = 1;
-	static final int SHUT_DOWN = 2;
-	static final int LOW_LOAD = 3;
-	static final int DISCONNECT = 4;
+	static final int HIGH_LOAD = 0;
+	static final int SHUT_DOWN = 1;
+	static final int LOW_LOAD = 2;
+	static final int DISCONNECT = 3;
 	
 	int id, cluster, state;
 	double[] attribute;

@@ -80,7 +80,7 @@ public class GUI {
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(93, 120, 86, 20);
-		txtPassword.setText("xxxx");
+		txtPassword.setText("root");
 		frmSmartPowerSystem.getContentPane().add(txtPassword);
 		
 		JLabel label_2 = new JLabel("Database Credentials:");
@@ -141,7 +141,7 @@ public class GUI {
 		
 		txtDatabase = new JTextField();
 		txtDatabase.setBounds(93, 65, 86, 20);
-		txtDatabase.setText("assignment_2");
+		txtDatabase.setText("subtables");
 		txtDatabase.setColumns(10);
 		frmSmartPowerSystem.getContentPane().add(txtDatabase);
 		

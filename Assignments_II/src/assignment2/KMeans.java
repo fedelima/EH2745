@@ -10,12 +10,14 @@ public class KMeans {
 		int N = learnSet.get(0).attribute.length; //number of attributes per sample.				
 		int M = learnSet.size(); //number of samples.
 		double dsq = 0.0;
-		double epsilon = 0.001;
+		double epsilon = 0.00000000000001;
+		double max_iter= 1000;
+		double iter=0;
 		double max_delta = epsilon + 1; //initialize max_delta greater than epsilon.
 		double[][] distance = new double[M][K]; //distance from sample "m" to centroid "k".
 		
 		Forgy(learnSet, centroids, K); //initialize K centroids using Forgy's algorithm.
-		while (max_delta > epsilon) {
+		while ((max_delta > epsilon) && (iter < max_iter)) {
 			//Cluster samples with centroids.
 			for (int m = 0; m < M; m++) {
 				Sample sample = learnSet.get(m);
@@ -52,6 +54,7 @@ public class KMeans {
 				}
 				centroids.set(k, centroid);
 			}
+			iter++;
 		}
 		return centroids;
 	}
@@ -85,11 +88,28 @@ public class KMeans {
 		int N = learnSet.get(0).attribute.length;
 		double[][] attribute = new double[K][N];
 		int min = 0, max = 199;
+		boolean NoGoodC=true;
+		boolean temp, temp0, temp1, temp2, temp3;
 		Random random = new Random();
-		for (int k=0; k < K; k++) {		
-			int rnd = random.nextInt((max - min) + 1) + min;
-			attribute[k] = learnSet.get(rnd).attribute;
-			centroids.add(new Sample(k+1, attribute[k], k));
+		while(NoGoodC) {
+			centroids.clear();
+			temp0=false; temp1=false; temp2=false; temp3=false; temp=true;
+			for (int k=0; k < K; k++) {		
+				int rnd = random.nextInt((max - min) + 1) + min;
+				attribute[k] = learnSet.get(rnd).attribute;
+				centroids.add(new Sample(k+1, attribute[k], k));
+			}
+			KLabel.LabelCentroids(centroids); //label centroids according to heuristics.
+			for (int k=0; k < K; k++) {	
+				switch (centroids.get(k).state) {
+				case 0 : temp0=true; break;
+				case 1 : temp1=true; break;
+				case 2 : temp2=true; break;
+				case 3 : temp3=true; break;
+				}
+			}
+			if (temp0 && temp1 && temp2 && temp3 && temp) NoGoodC=false;
 		}
+				
 	}
 }
