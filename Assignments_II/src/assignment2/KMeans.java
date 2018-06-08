@@ -102,10 +102,10 @@ public class KMeans {
 			KLabel.LabelCentroids(centroids); //label centroids according to heuristics.
 			for (int k=0; k < K; k++) {	
 				switch (centroids.get(k).state) {
-				case 0 : temp0=true; break;
-				case 1 : temp1=true; break;
-				case 2 : temp2=true; break;
-				case 3 : temp3=true; break;
+					case Sample.HIGH_LOAD : temp0 = true; break;
+					case Sample.SHUT_DOWN : temp1 = true; break;
+					case Sample.LOW_LOAD : temp2 = true; break;
+					case Sample.DISCONNECT : temp3 = true; break;
 				}
 			}
 			if (temp0 && temp1 && temp2 && temp3 && temp) NoGoodC=false;
