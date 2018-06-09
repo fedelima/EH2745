@@ -68,7 +68,7 @@ public class KNN {
 	
 	//*** DETERMINE MAXIMUM VALUE INDEX WITHIN ARRAY ***
 	private static int maxdex(int[] x) {
-		int max = 0; //very high initial value
+		int max = 0; //very low initial value
 		int maxdex = 0;
 		for (int i=0; i < x.length; i++) {
 			if (x[i] > max) {
